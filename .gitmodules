@@ -1,0 +1,27 @@
+[submodule "sub/django"]
+	path = sub/django
+	url = git://github.com/django/django.git
+[submodule "sub/colorized-logger"]
+	path = sub/colorized-logger
+	url = git://github.com/nshah/colorized_logger.git
+[submodule "sub/django-command-extensions"]
+	path = sub/django-command-extensions
+	url = git://github.com/nshah/django-command-extensions.git
+[submodule "sub/django-oauth-consumer"]
+	path = sub/django-oauth-consumer
+	url = git://github.com/nshah/django-oauth-consumer.git
+[submodule "sub/python-make-request"]
+	path = sub/python-make-request
+	url = git://github.com/nshah/python-make-request.git
+[submodule "sub/python-oauth"]
+	path = sub/python-oauth
+	url = git://github.com/nshah/python-oauth.git
+[submodule "sub/python-urlencoding"]
+	path = sub/python-urlencoding
+	url = git://github.com/nshah/python-urlencoding.git
+[submodule "sub/werkzeug"]
+	path = sub/werkzeug
+	url = git://github.com/nshah/werkzeug.git
+[submodule "sub/django-debug-toolbar"]
+	path = sub/django-debug-toolbar
+	url = git://github.com/robhudson/django-debug-toolbar.git

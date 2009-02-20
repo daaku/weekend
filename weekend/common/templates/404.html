@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Not Found{% endblock %}
+
+{% block content %}
+<h1>{% trans "Not Found" %}</h1>
+<div style="margin-top: 2em;">
+    {% trans "We could not find the page you were looking for." %}
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+*.pyc
+*.pyo
+/weekend.db
+/lib/*.egg/
+/lib/easy-install.pth
+/lib/site.py
