@@ -1,0 +1,52 @@
+8
+
+dir
+27
+http://opensocial-python-client.googlecode.com/svn/trunk/src/opensocial/oauth
+http://opensocial-python-client.googlecode.com/svn
+
+
+
+2008-12-22T23:50:55.384976Z
+17
+davidbyttow@google.com
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+3e12c496-ad04-11dd-ab18-15145061d018
+
+LICENSE
+file
+
+
+
+
+2009-02-21T08:01:10.000000Z
+e71357d3baead6bdbd37f82e3eb5177c
+2008-12-16T23:36:48.203011Z
+4
+davidbyttow@google.com
+
+__init__.py
+file
+
+
+
+
+2009-02-21T08:01:10.000000Z
+773ee17c196ebb6fdf62ccb6e6e19831
+2008-12-22T23:50:55.384976Z
+17
+davidbyttow@google.com
+

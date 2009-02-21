@@ -5,6 +5,8 @@ from django.utils.html import escape
 from weekend.fireeagle_oauth import app as fireeagle_oauth
 from weekend.yahoo_oauth import app as yahoo_oauth
 from make_request import make_request
+
+import opensocial
 import json
 
 YQL_URL='http://query.yahooapis.com/v1/yql'
@@ -63,3 +65,19 @@ def all_menus_yql(request):
     }
     response = yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token)
     return HttpResponse(unicode(response.read(), 'utf-8'))
+
+def myspace_oauth(request):
+    config = opensocial.ContainerConfig(oauth_consumer_key='http://www.myspace.com/330027797',
+        oauth_consumer_secret='1905410071aa4a9b8e314fe8f2cc0707',
+        server_rest_base='http://api.myspace.com/v2/')
+    container = opensocial.ContainerContext(config)
+
+    me = container.fetch_person('325642067')
+    friends = container.fetch_friends('325642067', '@friends')
+
+    output = "list of friend ids: <div>"
+    for friend in friends:
+     output = output + friend.get_id() + "<br/>"
+    output = output + "</div>"
+
+    return HttpResponse(output)
