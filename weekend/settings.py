@@ -44,6 +44,14 @@ YAHOO_OAUTH = {
     'consumer_key': 'FIXME',
     'consumer_secret': 'FIXME',
 }
+FIREEAGLE_OAUTH = {
+    'name': 'fireeagle',
+    'request_token_url': 'https://fireeagle.yahooapis.com/oauth/request_token',
+    'authorization_url': 'https://fireeagle.yahoo.net/oauth/authorize',
+    'access_token_url': 'https://fireeagle.yahooapis.com/oauth/access_token',
+    'consumer_key': 'FIXME',
+    'consumer_secret': 'FIXME',
+}
 INSTALLED_APPS = (
     'weekend.common',
 
