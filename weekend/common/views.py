@@ -68,7 +68,7 @@ def all_menus_yql(request):
 
 def myspace_oauth(request):
     config = opensocial.ContainerConfig(oauth_consumer_key='http://www.myspace.com/330027797',
-        oauth_consumer_secret='1905410071aa4a9b8e314fe8f2cc0707',
+        oauth_consumer_secret='FIXME',
         server_rest_base='http://api.myspace.com/v2/')
     container = opensocial.ContainerContext(config)
 
