@@ -50,3 +50,16 @@ def yelp_data_for_fireeagle_location(request):
         'ywsid': settings.YELP_KEY,
     })
     return HttpResponse(unicode(response.read(), 'utf-8'))
+
+@yahoo_oauth.require_access_token
+def all_menus_yql(request):
+    yql = """
+    select * from html where url="http://www.allmenus.com/ca/palo-alto/46901-osteria/menu/" and xpath='//div[@class="menu_item"]/span'
+    """
+    access_token = request.session['yahoo_access_token']
+    params = {
+        'q': yql,
+        'format': 'json',
+    }
+    response = yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token)
+    return HttpResponse(unicode(response.read(), 'utf-8'))

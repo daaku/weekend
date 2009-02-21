@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     (r'yql-example/$', views.yql_example),
     (r'fireeagle-location/$', views.fireeagle_location),
     (r'yelp-reviews/$', views.yelp_data_for_fireeagle_location),
+    (r'all-menus/$', views.all_menus_yql),
     (r'dump/$', views.dump),
 )
