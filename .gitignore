@@ -4,3 +4,4 @@
 /lib/*.egg/
 /lib/easy-install.pth
 /lib/site.py
+/weekend/settings_local.py

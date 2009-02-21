@@ -23,6 +23,7 @@ settings.INTERNAL_IPS = (
     '67.169.165.78',
     '::1',
     '127.0.0.1',
+    '207.192.74.92',
 )
 if hasattr(settings, 'TEMPLATE_CONTEXT_PROCESSORS'):
     settings.TEMPLATE_CONTEXT_PROCESSORS += (

@@ -19,7 +19,7 @@ USE_I18N = True
 MEDIA_ROOT = '%s/media' % os.path.dirname(os.path.realpath(__file__))
 MEDIA_URL = ''
 ADMIN_MEDIA_PREFIX = '/media/admin/'
-APPEND_SLASH = False
+APPEND_SLASH = True
 TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.load_template_source',
 )
@@ -35,23 +35,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 ROOT_URLCONF = 'weekend.urls'
-YAHOO_OAUTH = {
-    'name': 'yahoo',
-    'realm': 'yahooapis.com',
-    'request_token_url': 'https://api.login.yahoo.com/oauth/v2/get_request_token',
-    'authorization_url': 'https://api.login.yahoo.com/oauth/v2/request_auth',
-    'access_token_url': 'https://api.login.yahoo.com/oauth/v2/get_token',
-    'consumer_key': 'FIXME',
-    'consumer_secret': 'FIXME',
-}
-FIREEAGLE_OAUTH = {
-    'name': 'fireeagle',
-    'request_token_url': 'https://fireeagle.yahooapis.com/oauth/request_token',
-    'authorization_url': 'https://fireeagle.yahoo.net/oauth/authorize',
-    'access_token_url': 'https://fireeagle.yahooapis.com/oauth/access_token',
-    'consumer_key': 'FIXME',
-    'consumer_secret': 'FIXME',
-}
 INSTALLED_APPS = (
     'weekend.common',
 
@@ -63,3 +46,5 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sessions',
 )
+
+from settings_local import *
