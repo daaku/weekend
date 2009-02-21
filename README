@@ -1,0 +1,6 @@
+git clone git://github.com/nshah/weekend.git
+cd weekend
+git submodule init
+git submodule update
+vim weekend/settings.py # look for FIXME
+../manage.py runserver_plus 0.0.0.0:[random port number]
