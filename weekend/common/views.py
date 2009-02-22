@@ -26,7 +26,7 @@ def yql_example(request):
         'q': 'select * from social.profile where guid in (select guid from social.connections where owner_guid=me)',
         'format': 'json',
     }
-    response = yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token)
+    response = yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token, request=request)
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
 def dump(request):
@@ -35,13 +35,13 @@ def dump(request):
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
-    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token)
+    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request)
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
 @fireeagle_oauth.require_access_token
 def yelp_data_for_fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
-    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token)
+    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request)
     body = unicode(response.read(), 'utf-8')
     user = json.loads(body)
     [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(body)['user']['location_hierarchy'][0]['geometry']['bbox']
@@ -66,7 +66,7 @@ def all_menus_yql(request):
         'q': yql,
         'format': 'json',
     }
-    response = yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token)
+    response = yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token, request=request)
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
 def myspace_oauth(request):
@@ -89,7 +89,7 @@ def myspace_oauth(request):
 def restaurants(request):
   
     access_token = request.session['fireeagle_access_token']
-    cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
+    cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
     
     [ lon, lat ] = cordinates[0][0]
 
@@ -101,7 +101,7 @@ def restaurants(request):
         'format': 'json',
     }
 
-    restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token).read(), 'utf-8'))['query']['results']['Result']
+    restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token, request=request).read(), 'utf-8'))['query']['results']['Result']
     params = {
         'q': "select * from html where url='http://www.boorah.com/restaurants/mpMenu.jsp?rid=4756&restid=10522' and xpath='//iframe'",
         'format': 'json',
