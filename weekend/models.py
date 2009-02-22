@@ -8,7 +8,6 @@ class UserProfile(models.Model):
     
 class Review(models.Model):
     user = models.ForeignKey(User)
-    restaurant_id = models.CharField(max_length=254)
+    restaurant = models.CharField(max_length=254)
     stars = models.IntegerField()
     content = models.CharField(max_length=1000)
-

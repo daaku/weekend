@@ -6,6 +6,7 @@ urlpatterns = patterns('',
     (r'^$', views.index),
     (r'restaurants/$', views.restaurants),
     (r'reviews/$', views.reviews),
+    (r'review/$', views.add_review),
         
     (r'fireeagle-location/$', views.fireeagle_location),
     (r'myspace-oauth/$', views.myspace_oauth),

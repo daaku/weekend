@@ -1,14 +1,17 @@
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render_to_response as render
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape
 from django.contrib.auth.models import User
+from make_request import make_request
 from weekend.models import UserProfile
-from django.core.exceptions import ObjectDoesNotExist
+from weekend.models import Review
+from weekend.forms import ReviewForm
 from weekend.fireeagle_oauth import app as fireeagle_oauth
 from weekend.yahoo_oauth import app as yahoo_oauth
-from make_request import make_request
 
+import collections
 import opensocial
 import json
 
@@ -32,12 +35,14 @@ def yql_example(request):
 def dump(request):
     return HttpResponse('<pre>' + escape(str(request)) + '</pre>')
 
+@yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
     response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token)
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
+@yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def yelp_data_for_fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
@@ -86,12 +91,16 @@ def myspace_oauth(request):
     return HttpResponse(output)
 
 @yahoo_oauth.require_access_token
+@fireeagle_oauth.require_access_token
 def restaurants(request):
   
     access_token = request.session['fireeagle_access_token']
     cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
     
-    [ lon, lat ] = cordinates[0][0]
+    if(cordinates):
+      [ lon, lat ] = cordinates
+    else:
+      [ lon, lat ] = cordinates[0]
 
     yql = "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY)
 
@@ -110,9 +119,25 @@ def restaurants(request):
     return HttpResponse(render('common/restaurants.html', { 'restaurants': restaurants }))
 
 @yahoo_oauth.require_access_token
+@fireeagle_oauth.require_access_token
 def reviews(request):
 
     return HttpResponse()
+
+
+@yahoo_oauth.require_access_token    
+def add_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)        
+        if form.is_valid():
+            # review = Review.objects.get(pk=1)
+            # form = ReviewForm(instance=review)
+            form.save()
+            return HttpResponseRedirect('/reviews/')
+    else:
+        form = ReviewForm()
+    return HttpResponse(render('common/review.html', {'form': form}))
+
 
 def get_or_create_profile(user):
   try:
