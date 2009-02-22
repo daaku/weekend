@@ -11,12 +11,11 @@ from weekend.common.forms import ReviewForm
 from weekend.fireeagle_oauth import app as fireeagle_oauth
 from weekend.yahoo_oauth import app as yahoo_oauth
 
-import weekend.yosdk
+import weekend.yosdk as yosdk
 import collections
 import json
 
 YQL_URL='http://query.yahooapis.com/v1/yql'
-YOS_URL='http://social.yahooapis.com/v1'
 FIREEAGLE_USER_URL='https://fireeagle.yahooapis.com/api/0.1/user.json'
 YELP_REVIEW_URL='http://api.yelp.com/business_review_search'
 
