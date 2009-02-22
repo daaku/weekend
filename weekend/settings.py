@@ -47,4 +47,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
 )
 
+AUTH_PROFILE_MODULE = 'weekend.models.UserProfile'
+
 from settings_local import *
