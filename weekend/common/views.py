@@ -74,22 +74,6 @@ def all_menus_yql(request):
     response = yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token, request=request)
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
-def myspace_oauth(request):
-    config = opensocial.ContainerConfig(oauth_consumer_key='http://www.myspace.com/330027797',
-        oauth_consumer_secret='FIXME',
-        server_rest_base='http://api.myspace.com/v2/')
-    container = opensocial.ContainerContext(config)
-
-    me = container.fetch_person('325642067')
-    friends = container.fetch_friends('325642067', '@friends')
-
-    output = "list of friend ids: <div>"
-    for friend in friends:
-     output = output + friend.get_id() + "<br/>"
-    output = output + "</div>"
-
-    return HttpResponse(output)
-
 @yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def restaurants(request):

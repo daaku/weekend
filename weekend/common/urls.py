@@ -12,7 +12,6 @@ urlpatterns = patterns('',
     (r'updates/$', views.updates),
     
     (r'fireeagle-location/$', views.fireeagle_location),
-    (r'myspace-oauth/$', views.myspace_opensocial_oauth),
     (r'yelp-reviews/$', views.yelp_data_for_fireeagle_location),
 
     (r'all-menus/$', views.all_menus_yql),
