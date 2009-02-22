@@ -5,7 +5,6 @@ import weekend.common.views as views
 urlpatterns = patterns('',
     (r'^$', views.index),
     (r'yql-example/$', views.yql_example),
-    (r'social-graph/$', views.social_graph),
  
     (r'restaurants/$', views.restaurants),
     (r'reviews/$', views.reviews),

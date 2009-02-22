@@ -11,8 +11,8 @@ from weekend.common.forms import ReviewForm
 from weekend.fireeagle_oauth import app as fireeagle_oauth
 from weekend.yahoo_oauth import app as yahoo_oauth
 
+import weekend.yosdk
 import collections
-import time
 import json
 
 YQL_URL='http://query.yahooapis.com/v1/yql'
@@ -32,17 +32,6 @@ def yql_example(request):
     }
     response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
     return HttpResponse(unicode(response.read(), 'utf-8'))
-
-@yahoo_oauth.require_access_token
-def social_graph(request):
-    access_token = request.session['yahoo_access_token']
-    params = {
-        'q': 'select * from social.profile where guid in (select guid from social.connections where owner_guid=me)',
-        'format': 'json',
-    }
-    response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
-    return HttpResponse(unicode(response.read(), 'utf-8'))
-
 
 def dump(request):
     return HttpResponse('<pre>' + escape(str(request)) + '</pre>')
@@ -139,40 +128,6 @@ def get_or_create_profile(user):
       profile = UserProfile(guid='12345667890', user=user)
       profile.save()
   return profile
-
-@yahoo_oauth.require_access_token
-def updates(request):
-    access_token = request.session['yahoo_access_token']
-    guid = access_token['xoauth_yahoo_guid']
-    descr = "insert description" #FIXME
-    title = "insert title" #FIXME
-    link = "http://daaku.org" #FIXME
-    source = "APP.JUqAuh5g"
-    suid = "installed3"
-    body = '''
-{ "updates":
-  [
-    {
-      "class": "app",
-      "collectionType": "guid",
-      "description": "%s",
-      "suid": "%s",
-      "link": "%s",
-      "source": "%s",
-      "pubDate": "%s",
-      "title": "%s",
-      "type": "appActivity",
-      "collectionID": "%s"
-    }
-  ]
-}''' % (descr, suid, link, source, int(time.time()), title, guid)
-    response = yahoo_oauth.make_signed_req("%s/user/%s/updates/%s/%s" % (YOS_URL, guid, source, suid), method='PUT', content=body, token=access_token, request=request)
-    return HttpResponse(unicode(response.read(), 'utf-8'))
-
-
-
-
-
 
 
 
