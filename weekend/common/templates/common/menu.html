@@ -4,6 +4,7 @@
 }
 #items .name{
 	float:left;
+	display:block;
 }
 #items .totals{
 	float:right;
@@ -25,9 +26,9 @@
 <div id="items">
 {% for item in menu %}
 	<div class="item">
-		<div class="name">{{ item.name }}&nbsp;(${{ item.price }})</div><div class="totals">{{ item.reviews.total.up }}|{{ item.reviews.total.dn }}</div>
+		<a class="name" href="#reviews_{{ item.iid }}">{{ item.name }}&nbsp;(${{ item.price }})</a><div class="totals">{{ item.reviews.total.up }}|{{ item.reviews.total.dn }}</div>
 		<div style="clear:both"></div>
-		<div class="reviews">
+		<div class="reviews" id="reviews_{{ item.iid }}">
 			<div class="review">
 				<div class="reviewer"><img src="{{ review.img }}"/>you</div>
 					<div class="buttons">
@@ -56,45 +57,17 @@
 </div>
 <script>
 var items = document.getElementById('items'),
-	foreach = function(collection, callback){
-		if(collection.length){//array or node list
-			for(var i = 0; i < collection.length; i++){
-				callback(i, collection[i]);
-			}
-		}else if(collection.hasOwnProperty){
-			for(var key in collection){
-				if(collection.hasOwnProperty(key)){
-					callback(key, collection[key]);
-				}
-			}
-		}else{
-			throw('each() error: collection (' + collection + ') is neither an array nor an object');
-		}
-	},
 	hasClass = function(node, className){
 		return new RegExp('[\b]*' + className + '[\b]*').test(node.className);
 	},
-	getElementsByClassName = function(elements, className){
-		var nodes = [];
-		foreach(elements, function(i,element){
-			if(className === element.className){
-				nodes.push(element);
-			}
-		});
-		return nodes;
-	},
 	handleClick=function(e){
-		var divs,
-			reviews,
+		var reviews,
 			href,
 			req;
-		if(hasClass(e.target, 'item')){
-			divs = e.target.getElementsByTagName('div');
-			reviews = getElementsByClassName(divs, 'reviews')[0];
-			reviews.style.display = ('block' === reviews.style.display) ? 'none' : 'block';
-		}else if(hasClass(e.target.parentNode, 'item')){
-			divs = e.target.parentNode.getElementsByTagName('div');
-			reviews = getElementsByClassName(divs, 'reviews')[0];
+		if(hasClass(e.target.parentNode, 'item') || hasClass(e.target, 'item')){
+			e.preventDefault();
+			href = e.target.href;
+			reviews = document.getElementById(href.substr(href.indexOf('#') + 1));//get el by anchor tag text
 			reviews.style.display = ('block' === reviews.style.display) ? 'none' : 'block';
 		}else if(hasClass(e.target, 'vote')){
 			e.preventDefault();
@@ -109,7 +82,7 @@ var items = document.getElementById('items'),
 		    }
 			if(req) {
 				req.onreadystatechange = null;
-				req.open("POST", href, true);
+				req.open("GET", href, true);
 				req.send("");
 			}
 		}
