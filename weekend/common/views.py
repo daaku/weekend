@@ -118,7 +118,12 @@ def restaurants(request):
         'format': 'json',
     }
 
-    response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
+    response = yahoo_oauth.make_signed_req(
+        YQL_URL,
+        content=params,
+        token=access_token,
+        request=request,
+    )
     body = unicode(response.read(), 'utf-8')
     restaurants = json.loads(body)['query']['results']['Result']
     params = {
@@ -160,7 +165,13 @@ def get_or_create_profile(user):
 def places(request):
     # [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(loc)['user']['location_hierarchy'][1]['geometry']['bbox']
     access_token = request.session['fireeagle_access_token']
-    cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
+    response = fireeagle_oauth.make_signed_req(
+        FIREEAGLE_USER_URL,
+        token=access_token,
+        request=request,
+    )
+    body = unicode(response.read(), 'utf-8')
+    cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
     if(cordinates):
       [ lon, lat ] = cordinates
     else:
