@@ -1,37 +1,0 @@
-8
-
-dir
-27
-http://opensocial-python-client.googlecode.com/svn/trunk/samples
-http://opensocial-python-client.googlecode.com/svn
-
-
-
-2009-01-15T19:53:42.796862Z
-27
-davidbyttow@google.com
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-3e12c496-ad04-11dd-ab18-15145061d018
-
-oauthbox
-dir
-
-friends
-dir
-
-gifts
-dir
-
