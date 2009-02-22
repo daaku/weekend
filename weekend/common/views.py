@@ -2,6 +2,9 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render_to_response as render
 from django.utils.html import escape
+from django.contrib.auth.models import User
+from weekend.models import UserProfile
+from django.core.exceptions import ObjectDoesNotExist
 from weekend.fireeagle_oauth import app as fireeagle_oauth
 from weekend.yahoo_oauth import app as yahoo_oauth
 from make_request import make_request
@@ -81,3 +84,40 @@ def myspace_oauth(request):
     output = output + "</div>"
 
     return HttpResponse(output)
+
+@yahoo_oauth.require_access_token
+def restaurants(request):
+  
+    access_token = request.session['fireeagle_access_token']
+    cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
+    
+    [ lon, lat ] = cordinates[0][0]
+
+    yql = "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY)
+
+    access_token = request.session['yahoo_access_token']
+    params = {
+        'q': yql,
+        'format': 'json',
+    }
+
+    restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token).read(), 'utf-8'))['query']['results']['Result']
+    params = {
+        'q': "select * from html where url='http://www.boorah.com/restaurants/mpMenu.jsp?rid=4756&restid=10522' and xpath='//iframe'",
+        'format': 'json',
+    }
+
+    return HttpResponse(render('common/restaurants.html', { 'restaurants': restaurants }))
+
+@yahoo_oauth.require_access_token
+def reviews(request):
+
+    return HttpResponse()
+
+def get_or_create_profile(user):
+  try:
+      profile = user.get_profile()
+  except ObjectDoesNotExist:
+      profile = UserProfile(guid='12345667890', user=user)
+      profile.save()
+  return profile
