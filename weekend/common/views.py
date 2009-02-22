@@ -5,9 +5,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape
 from django.contrib.auth.models import User
 from make_request import make_request
-from weekend.models import UserProfile
-from weekend.models import Review
-from weekend.forms import ReviewForm
+from weekend.common.models import UserProfile
+from weekend.common.models import Review
+from weekend.common.forms import ReviewForm
 from weekend.fireeagle_oauth import app as fireeagle_oauth
 from weekend.yahoo_oauth import app as yahoo_oauth
 
