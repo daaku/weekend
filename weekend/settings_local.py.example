@@ -18,4 +18,4 @@ FIREEAGLE_OAUTH = {
     'consumer_secret': 'FIXME',
 }
 YELP_KEY = 'FIXME'
-BOORAH_KEY = 'FIXME'
+BOORAH_API_KEY = 'FIXME'

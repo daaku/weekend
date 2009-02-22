@@ -94,7 +94,7 @@ def restaurants(request):
         'format': 'json',
     }
 
-    restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_URL, parameters=params, token=access_token, request=request).read(), 'utf-8'))['query']['results']['Result']
+    restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request).read(), 'utf-8'))['query']['results']['Result']
     params = {
         'q': "select * from html where url='http://www.boorah.com/restaurants/mpMenu.jsp?rid=4756&restid=10522' and xpath='//iframe'",
         'format': 'json',
