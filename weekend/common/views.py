@@ -78,10 +78,9 @@ def all_menus_yql(request):
 @yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def restaurants(request):
-  
     access_token = request.session['fireeagle_access_token']
     cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
-    
+
     if(cordinates):
       [ lon, lat ] = cordinates
     else:
@@ -106,14 +105,12 @@ def restaurants(request):
 @yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def reviews(request):
-
     return HttpResponse()
 
-
-@yahoo_oauth.require_access_token    
+@yahoo_oauth.require_access_token
 def add_review(request):
     if request.method == 'POST':
-        form = ReviewForm(request.POST)        
+        form = ReviewForm(request.POST)
         if form.is_valid():
             # review = Review.objects.get(pk=1)
             # form = ReviewForm(instance=review)
@@ -140,9 +137,9 @@ def updates(request):
     title = "insert title" #FIXME
     link = "http://daaku.org" #FIXME
     source = "APP.JUqAuh5g"
-    suid = "installed"
+    suid = "installed3"
     body = '''
-{ "updates": 
+{ "updates":
   [
     {
       "class": "app",
@@ -154,9 +151,9 @@ def updates(request):
       "pubDate": "%s",
       "title": "%s",
       "type": "appActivity",
-      "collectionID": "%s"  
+      "collectionID": "%s"
     }
   ]
-}''' % (descr, suid, link, source, time.time(), title, guid)
-    response = yahoo_oauth.make_signed_req_raw("%s/user/%s/updates/%s/%s" % (YOS_URL, guid, source, suid), method='PUT', body=body, token=access_token)
+}''' % (descr, suid, link, source, int(time.time()), title, guid)
+    response = yahoo_oauth.make_signed_req("%s/user/%s/updates/%s/%s" % (YOS_URL, guid, source, suid), method='PUT', content=body, token=access_token, request=request)
     return HttpResponse(unicode(response.read(), 'utf-8'))
