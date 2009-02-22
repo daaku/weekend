@@ -50,5 +50,5 @@ def geocode(request, location):
         'format': 'json',
     }
     response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
-    body = json.loads(unicode(response.read(), 'utf-8'))['query']['results']['place'][0]
+    body = json.loads(unicode(response.read(), 'utf-8'))['query']['results']['place'][0]['centroid']
     return body
