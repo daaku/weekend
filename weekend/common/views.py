@@ -130,17 +130,16 @@ def get_or_create_profile(user):
   return profile
 
 
-
-def fireeagle_location_raw(request):
-    access_token = request.session['fireeagle_access_token']
-    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token)
-    return response.read()
-
-
 @fireeagle_oauth.require_access_token
 def places(request):
-    loc = fireeagle_location_raw(request)
-    [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(loc)['user']['location_hierarchy'][1]['geometry']['bbox']
+    # [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(loc)['user']['location_hierarchy'][1]['geometry']['bbox']
+    access_token = request.session['fireeagle_access_token']
+    cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
+    if(cordinates):
+      [ lon, lat ] = cordinates
+    else:
+      [ lon, lat ] = cordinates[0]
+
     # places = get_places(br_lat, br_long, tl_lat, tl_long)
     places = [
         {'name':'restaurant A','addr':'1 this ave, sunnyvale, ca 94098','id':'restauranta'},
