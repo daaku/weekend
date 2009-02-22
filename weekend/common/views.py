@@ -168,3 +168,80 @@ def updates(request):
 }''' % (descr, suid, link, source, int(time.time()), title, guid)
     response = yahoo_oauth.make_signed_req("%s/user/%s/updates/%s/%s" % (YOS_URL, guid, source, suid), method='PUT', content=body, token=access_token, request=request)
     return HttpResponse(unicode(response.read(), 'utf-8'))
+
+
+
+
+
+
+
+
+def fireeagle_location_raw(request):
+    access_token = request.session['fireeagle_access_token']
+    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token)
+    return response.read()
+
+
+@fireeagle_oauth.require_access_token
+def places(request):
+    loc = fireeagle_location_raw(request)
+    [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(loc)['user']['location_hierarchy'][1]['geometry']['bbox']
+    # places = get_places(br_lat, br_long, tl_lat, tl_long)
+    places = [
+        {'name':'restaurant A','addr':'1 this ave, sunnyvale, ca 94098','id':'restauranta'},
+        {'name':'cafe B','addr':'239840 that st., mountain view, ca 98231','id':'cafeb'},
+        {'name':'dive C','addr':'3 nonce rd., san jose, ca 90801','id':'divec'}
+    ]
+    return render('common/places.html', {'places':places});
+
+# @yahoo_oauth.require_access_token
+def menu(request):
+    pid = request.GET['pid']
+    # get_menu(pid)
+    # reviews = get_reviews(pid)
+    menu = [
+        {
+            'iid':pid+'itema', 
+            'name':'item a', 
+            'price':1.00, 
+            'reviews':{
+                'total':{'up':2,'dn':1},
+                'by_name': [
+                    {'uid':'guid1', 'name':'friend 1', 'img':'http://...sjdlfj.jpg', 'vote':1},
+                    {'uid':'guid2', 'name':'friend 2', 'img':'http://...friend2.jpg', 'vote':1},
+                    {'uid':'guid3', 'name':'friend 3', 'img':'http://...friend3.jpg', 'vote':0}
+                ]
+            }
+        }, 
+        {
+            'iid':pid+'itemb', 
+            'name':'item b', 
+            'price':2.50,
+            'reviews':{
+                'total': {'up':1,'dn':2}, 
+                'by_name': [
+                    {'uid':'guid4', 'name':'friend 4', 'img':'http://...friend4.jpg', 'vote':0},
+                    {'uid':'guid2', 'name':'friend 2', 'img':'http://...friend2.jpg', 'vote':0},
+                    {'uid':'guid6', 'name':'friend 6', 'img':'http://...friend6.jpg', 'vote':1}
+                ]
+            }
+        },
+        {
+            'iid':pid+'pepsi', 
+            'name':'pepsi', 
+            'price':4.00,            
+            'reviews':{
+                'total': {'up':2,'dn':0}, 
+                'yours':1,
+                'by_name': [
+                    {'uid':'guid3', 'name':'friend 3', 'img':'http://...friend3.jpg', 'vote':1},
+                    {'uid':'guid6', 'name':'friend 6', 'img':'http://...friend6.jpg', 'vote':1}
+                ]
+            }
+        }
+    ]
+
+    return render('common/menu.html', {'menu':menu});
+
+def vote(request):
+    return HttpResponse(unicode('voted!', 'utf-8'))

@@ -1,0 +1,118 @@
+<style>
+#items{
+	width:500px;
+}
+#items .name{
+	float:left;
+}
+#items .totals{
+	float:right;
+}
+#items .reviews{
+	display:none;
+}
+#items .reviewer{
+	float:left;
+}
+#items div.vote,
+#items .buttons{
+	float:right;
+}
+#items .selected{
+	color:red;
+}
+</style>
+<div id="items">
+{% for item in menu %}
+	<div class="item">
+		<div class="name">{{ item.name }}&nbsp;(${{ item.price }})</div><div class="totals">{{ item.reviews.total.up }}|{{ item.reviews.total.dn }}</div>
+		<div style="clear:both"></div>
+		<div class="reviews">
+			<div class="review">
+				<div class="reviewer"><img src="{{ review.img }}"/>you</div>
+					<div class="buttons">
+						{% if item.reviews.yours %}
+							{% ifequal 1 item.reviews.yours %}
+								<a class="vote selected" href="/vote/?iid={{ item.iid }}&value=1">+1</a>|<a class="vote" href="/vote/?iid={{ item.iid }}&value=0">-1</a>
+							{% else %}
+								<a class="vote" href="/vote/?iid={{ item.iid }}&value=1">+1</a>|<a class="vote" href="/vote/?iid={{ item.iid }}&value=0">-1</a>
+							{% endifequal %}
+						{% else %}
+							<a class="vote" href="/vote/?iid={{ item.iid }}&value=1">+1</a>|<a class="vote" href="/vote/?iid={{ item.iid }}&value=0">-1</a>
+						{% endif %}
+					</div>
+				<div style="clear:both"></div>
+			</div>
+			{% for review in item.reviews.by_name %}
+			<div class="review">
+				<div class="reviewer"><img src="{{ review.img }}"/>{{ review.name }}</div>
+				<div class="vote">{{ review.vote }}</div>
+				<div style="clear:both"></div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endfor %}
+</div>
+<script>
+var items = document.getElementById('items'),
+	foreach = function(collection, callback){
+		if(collection.length){//array or node list
+			for(var i = 0; i < collection.length; i++){
+				callback(i, collection[i]);
+			}
+		}else if(collection.hasOwnProperty){
+			for(var key in collection){
+				if(collection.hasOwnProperty(key)){
+					callback(key, collection[key]);
+				}
+			}
+		}else{
+			throw('each() error: collection (' + collection + ') is neither an array nor an object');
+		}
+	},
+	hasClass = function(node, className){
+		return new RegExp('[\b]*' + className + '[\b]*').test(node.className);
+	},
+	getElementsByClassName = function(elements, className){
+		var nodes = [];
+		foreach(elements, function(i,element){
+			if(className === element.className){
+				nodes.push(element);
+			}
+		});
+		return nodes;
+	},
+	handleClick=function(e){
+		var divs,
+			reviews,
+			href,
+			req;
+		if(hasClass(e.target, 'item')){
+			divs = e.target.getElementsByTagName('div');
+			reviews = getElementsByClassName(divs, 'reviews')[0];
+			reviews.style.display = ('block' === reviews.style.display) ? 'none' : 'block';
+		}else if(hasClass(e.target.parentNode, 'item')){
+			divs = e.target.parentNode.getElementsByTagName('div');
+			reviews = getElementsByClassName(divs, 'reviews')[0];
+			reviews.style.display = ('block' === reviews.style.display) ? 'none' : 'block';
+		}else if(hasClass(e.target, 'vote')){
+			e.preventDefault();
+			href = e.target.href;
+			req = false;
+		    if(window.XMLHttpRequest) {
+		    	try {
+					req = new XMLHttpRequest();
+		        } catch(e) {
+					req = false;
+		        }
+		    }
+			if(req) {
+				req.onreadystatechange = null;
+				req.open("POST", href, true);
+				req.send("");
+			}
+		}
+	}; 
+items.onclick=handleClick;
+</script>

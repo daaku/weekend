@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+#places a{
+	display:block;
+	margin-bottom:10px;
+}
+#places a .addr{
+	font-style:italic;
+}
+</style>
+<div id="places">
+{% for place in places %}
+	<a href="/menu/?pid={{ place.id }}" class="place">
+		<div class="name">{{ place.name }}</div>
+		<div class="addr">{{ place.addr }}</div>
+	</a>
+{% endfor %}
+</div>
+update location?
+<form action="/update/">
+	<input name="address" /><br/>
+	<input name="submit" type="submit" value="go" />
+</form>
+{% endblock %}

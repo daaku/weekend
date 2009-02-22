@@ -8,12 +8,12 @@ urlpatterns = patterns('',
     (r'restaurants/$', views.restaurants),
     (r'reviews/$', views.reviews),
     (r'review/$', views.add_review),
-        
     (r'updates/$', views.updates),
-    
     (r'fireeagle-location/$', views.fireeagle_location),
     (r'yelp-reviews/$', views.yelp_data_for_fireeagle_location),
-
     (r'all-menus/$', views.all_menus_yql),
     (r'dump/$', views.dump),
+    (r'places/$', views.places),
+    (r'menu/$', views.menu),
+    (r'vote/$', views.vote),
 )
