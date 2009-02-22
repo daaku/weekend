@@ -16,6 +16,7 @@ import time
 import json
 
 YQL_URL='http://query.yahooapis.com/v1/yql'
+YOS_URL='http://social.yahooapis.com/v1'
 FIREEAGLE_USER_URL='https://fireeagle.yahooapis.com/api/0.1/user.json'
 YELP_REVIEW_URL='http://api.yelp.com/business_review_search'
 
