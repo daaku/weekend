@@ -42,3 +42,13 @@ def updates(request, descr, title, link):
     }''' % (descr, suid, link, source, int(time.time()), title, guid)
     response = yahoo_oauth.make_signed_req("%s/user/%s/updates/%s/%s" % (YOS_URL, guid, source, suid), method='PUT', content=body, token=access_token, request=request)
     return response.status
+
+def geocode(request, location):
+    access_token = request.session['yahoo_access_token']
+    params = {
+        'q': 'select * from geo.places where text="' + location + '"',
+        'format': 'json',
+    }
+    response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
+    body = json.loads(unicode(response.read(), 'utf-8'))['query']['results']['place'][0]
+    return body
