@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block head %}
+    <meta http-equiv="Refresh" content="5; url={{ authorization_url }}" />
+{% endblock %}
 {% block content %}
-    <a href="{{ authorization_url }}">Lets dance.</a>
+    <a href="{{ authorization_url }}">Dancing in 5</a>&hellip;
 {% endblock %}
