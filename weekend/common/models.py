@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
-    guid = models.CharField(max_length=64)
-    access_token = models.CharField(max_length=128)
+    yahoo_guid = models.CharField(max_length=64)
+    yahoo_access_token = models.TextField()
 
     def __unicode__(self):
         return self.user.first_name
