@@ -4,7 +4,7 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DATABASE_ENGINE = 'sqlite3'
-DATABASE_NAME = 'daaku.db'
+DATABASE_NAME = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'daaku.db'))
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 SECRET_KEY = 'm&nDSG45tfdb5yx*=ex=h9byu38p-@lg+lq+*o!#-bqeu30qe!'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
