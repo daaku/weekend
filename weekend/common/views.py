@@ -30,7 +30,12 @@ def yql_example(request):
         'q': 'select * from social.profile where guid in (select guid from social.connections where owner_guid=me)',
         'format': 'json',
     }
-    response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
+    response = yahoo_oauth.make_signed_req(
+        YQL_URL,
+        content=params,
+        token=access_token,
+        request=request,
+    )
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
 def dump(request):
@@ -40,14 +45,22 @@ def dump(request):
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
-    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request)
+    response = fireeagle_oauth.make_signed_req(
+        FIREEAGLE_USER_URL,
+        token=access_token,
+        request=request,
+    )
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
 @yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def yelp_data_for_fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
-    response = fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request)
+    response = fireeagle_oauth.make_signed_req(
+        FIREEAGLE_USER_URL,
+        token=access_token,
+        request=request,
+    )
     body = unicode(response.read(), 'utf-8')
     user = json.loads(body)
     [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(body)['user']['location_hierarchy'][0]['geometry']['bbox']
@@ -72,14 +85,25 @@ def all_menus_yql(request):
         'q': yql,
         'format': 'json',
     }
-    response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
+    response = yahoo_oauth.make_signed_req(
+        YQL_URL,
+        content=params,
+        token=access_token,
+        request=request,
+    )
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
 @yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def restaurants(request):
     access_token = request.session['fireeagle_access_token']
-    cordinates = json.loads(unicode(fireeagle_oauth.make_signed_req(FIREEAGLE_USER_URL, token=access_token, request=request).read(), 'utf-8'))['user']['location_hierarchy'][0]['geometry']['coordinates']
+    response = fireeagle_oauth.make_signed_req(
+        FIREEAGLE_USER_URL,
+        token=access_token,
+        request=request,
+    )
+    body = unicode(response.read(), 'utf-8')
+    cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
 
     if(cordinates):
       [ lon, lat ] = cordinates
@@ -94,7 +118,9 @@ def restaurants(request):
         'format': 'json',
     }
 
-    restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request).read(), 'utf-8'))['query']['results']['Result']
+    response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
+    body = unicode(response.read(), 'utf-8')
+    restaurants = json.loads(body)['query']['results']['Result']
     params = {
         'q': "select * from html where url='http://www.boorah.com/restaurants/mpMenu.jsp?rid=4756&restid=10522' and xpath='//iframe'",
         'format': 'json',
@@ -155,9 +181,9 @@ def menu(request):
     # reviews = get_reviews(pid)
     menu = [
         {
-            'iid':pid+'itema', 
-            'name':'item a', 
-            'price':1.00, 
+            'iid':pid+'itema',
+            'name':'item a',
+            'price':1.00,
             'reviews':{
                 'total':{'up':2,'dn':1},
                 'by_name': [
@@ -166,13 +192,13 @@ def menu(request):
                     {'uid':'guid3', 'name':'friend 3', 'img':'http://...friend3.jpg', 'vote':0}
                 ]
             }
-        }, 
+        },
         {
-            'iid':pid+'itemb', 
-            'name':'item b', 
+            'iid':pid+'itemb',
+            'name':'item b',
             'price':2.50,
             'reviews':{
-                'total': {'up':1,'dn':2}, 
+                'total': {'up':1,'dn':2},
                 'by_name': [
                     {'uid':'guid4', 'name':'friend 4', 'img':'http://...friend4.jpg', 'vote':0},
                     {'uid':'guid2', 'name':'friend 2', 'img':'http://...friend2.jpg', 'vote':0},
@@ -181,11 +207,11 @@ def menu(request):
             }
         },
         {
-            'iid':pid+'pepsi', 
-            'name':'pepsi', 
-            'price':4.00,            
+            'iid':pid+'pepsi',
+            'name':'pepsi',
+            'price':4.00,
             'reviews':{
-                'total': {'up':2,'dn':0}, 
+                'total': {'up':2,'dn':0},
                 'yours':1,
                 'by_name': [
                     {'uid':'guid3', 'name':'friend 3', 'img':'http://...friend3.jpg', 'vote':1},
