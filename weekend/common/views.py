@@ -96,12 +96,11 @@ def all_menus_yql(request):
     )
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
-def restaurants(request):
+def places(request):
 
     lat = request.GET['lat']     # 37.4248085022
     lon = request.GET['lon']     # -122.074012756
     
-    access_token = request.session['yahoo_access_token']
     params = {
         'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
         'format': 'json',
@@ -109,7 +108,7 @@ def restaurants(request):
 
     restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))['query']['results']['Result']
 
-    return HttpResponse(render('common/restaurants.html', { 'restaurants': restaurants }))
+    return HttpResponse(render('common/places.html', { 'places': restaurants }))
 
 def items(request):
   
@@ -158,30 +157,6 @@ def get_or_create_profile(user):
       profile.save()
   return profile
 
-
-@fireeagle_oauth.require_access_token
-def places(request):
-    # [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(loc)['user']['location_hierarchy'][1]['geometry']['bbox']
-    access_token = request.session['fireeagle_access_token']
-    response = fireeagle_oauth.make_signed_req(
-        FIREEAGLE_USER_URL,
-        token=access_token,
-        request=request,
-    )
-    body = unicode(response.read(), 'utf-8')
-    cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
-    if(cordinates):
-      [ lon, lat ] = cordinates
-    else:
-      [ lon, lat ] = cordinates[0]
-
-    # places = get_places(br_lat, br_long, tl_lat, tl_long)
-    places = [
-        {'name':'restaurant A','addr':'1 this ave, sunnyvale, ca 94098','id':'restauranta'},
-        {'name':'cafe B','addr':'239840 that st., mountain view, ca 98231','id':'cafeb'},
-        {'name':'dive C','addr':'3 nonce rd., san jose, ca 90801','id':'divec'}
-    ]
-    return render('common/places.html', {'places':places});
 
 # @yahoo_oauth.require_access_token
 def menu(request):
