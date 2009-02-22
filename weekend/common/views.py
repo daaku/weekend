@@ -138,10 +138,9 @@ def reviews(request):
 @yahoo_oauth.require_access_token
 def add_review(request):
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        base_review = Review(user=request.user)
+        form = ReviewForm(request.POST, instance=base_review)
         if form.is_valid():
-            # review = Review.objects.get(pk=1)
-            # form = ReviewForm(instance=review)
             form.save()
             return HttpResponseRedirect('/reviews/')
     else:
