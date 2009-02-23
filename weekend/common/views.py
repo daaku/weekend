@@ -49,6 +49,15 @@ def fireeagle_location(request):
         (lat, lon) = cordinates
     return HttpResponseRedirect("/places/?lat=%s&lon=%s" % (lat, lon))
 
+@yahoo_oauth.require_access_token
+def items_in_graph(request):
+    guid = request.user.username
+    graph = yosdk.social_graph(request)
+    guids = [p['guid'] for p in graph] + [guid]
+    friends = User.objects.filter(username__in=guids)
+    reviews = Review.objects.filter(user__in=friends)
+    return HttpResponse(escape(str(reviews)))
+
 def places(request):
     if 'lat' in request.GET and 'lon' in request.GET:
         lat = request.GET['lat']     # 37.4248085022
