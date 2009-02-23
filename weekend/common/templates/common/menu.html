@@ -1,51 +1,6 @@
-<style>
-#items{
-    width:500px;
-}
-
-#items .item{
-    border-bottom: thin solid #ddd;
-    padding-bottom: 1ex;
-    margin-bottom: 1ex;
-    display:block;
-}
-#items .item .name{
-    float:left;
-    display:block;
-}
-#items .item .totals{
-    float:right;
-}
-#items .item .totals .up,
-#items .item .totals .dn{
-    padding:1ex;
-    border:thin solid #ddd;
-    color:white;
-    font-weight:bold;
-}
-#items .item .totals .up{
-    background-color:#47D547;
-}
-#items .item .totals .dn{
-    background-color:red;
-}
-
-
-#items .reviews{
-    display:none;
-}
-#items .reviewer{
-    float:left;
-}
-#items div.vote,
-#items .buttons{
-    float:right;
-}
-#items .buttons a img{
-    border:none;
-}
-</style>
-<div id="items">
+{% extends "base.html" %}
+{% block content %}
+<div id="menu">
 {% for item in menu %}
     <div class="item">
         <a class="name" href="#reviews_{{ item.iid }}">{{ item.name }}&nbsp;(${{ item.price }})</a>
@@ -89,8 +44,9 @@
     </div>
 {% endfor %}
 </div>
+
 <script>
-var items = document.getElementById('items'),
+var menu = document.getElementById('menu'),
     hasClass = function(node, className){
         return new RegExp('[\b]*' + className + '[\b]*').test(node.className);
     },
@@ -108,15 +64,6 @@ var items = document.getElementById('items'),
         }else{
             throw('each() error: collection (' + collection + ') is neither an array nor an object');
         }
-    },
-    getElementsByClassName = function(elements, className){
-        var nodes = [];
-        foreach(elements, function(i,element){
-            if(hasClass(element, className)){
-                nodes.push(element);
-            }
-        });
-        return nodes;
     },
     makeRequest = function(url){//FF/Safari only
         var req = false;
@@ -167,5 +114,6 @@ var items = document.getElementById('items'),
             e.target.src = active_urls[href.substr(-1)];//last char in vote href is either 1 or 0
         }
     }; 
-items.onclick=handleClick;
+menu.onclick = handleClick;
 </script>
+{% endblock %}
