@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 style="position: absolute; top: 40%; left: 40%; font-size: 250%;">foo&mdash;bar</h1>
-<a href="/fireeagle-location/"><img src="http://fireeagle.yahoo.net/images/badge/fe_withyahoo_big.png" alt="Use fireeagle to get your location"></a>
 
-<br/>or<hr/><br/>
+<div class="center">
+	<a href="/fireeagle-location/"><img src="http://fireeagle.yahoo.net/images/badge/fe_withyahoo_big.png" alt="Use fireeagle to get your location" /></a>
 
-<form action="/location/" method="GET">
-	<input name="address" /><br/>
-	<input name="submit" type="submit" value="go" />
-</form>
+	<hr />
 
+	<form action="/location/" method="GET">
+		<fieldset>
+			<legend>Otherwise, enter your location:</legend>
+			<input name="address" title="For example: 94105 or 1600 Amphitheater, Mountain View, CA" />
+			<input name="submit" type="submit" value="go" />
+		</fieldset>
+	</form>
+</div>
 {% endblock %}
