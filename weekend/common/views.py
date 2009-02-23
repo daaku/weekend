@@ -56,13 +56,21 @@ def items_in_graph(request, restaurant):
     profiles = {}
     for p in yosdk.social_graph(request):
         profiles[p['guid']] = p
-
+    profiles['BJTDY5GOXXOBRASYLIGD4WUDM4'] = {
+        'guid': 'BJTDY5GOXXOBRASYLIGD4WUDM4',
+        'nickname': 'Chirag',
+        'image': {
+            'imageUrl': 'http://F3.yahoofs.com/coreid/4917386ai946zul7sp1/HG3DMu86cLXmekhOh1KGhF8-/3/t192.png?ciAQpxKB_xQNbneN'
+        }
+    }
     friends = User.objects.filter(username__in=profiles.keys())
     reviews = Review.objects.filter(user__in=friends)
     logging.error(reviews)
     to_return = []
     for review in reviews:
         profile = profiles[review.user.username]
+        logging.debug(restaurant)
+        logging.debug(review.restaurant)
         if restaurant == review.restaurant:
             to_return.append({
                 'guid': profile['guid'],
@@ -96,6 +104,7 @@ def places(request):
     else:
         return HttpResponseRedirect('/')
 
+@yahoo_oauth.require_access_token
 def menu(request):
 
     if 'lat' in request.GET and 'lon' in request.GET and 'restaurant' in request.GET:
