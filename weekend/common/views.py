@@ -16,7 +16,7 @@ import collections
 import json
 
 YQL_URL='http://query.yahooapis.com/v1/yql'
-YQL_PUBLIC_URL='http://query.yahooapis.com/v1/yql'
+YQL_PUBLIC_URL='http://query.yahooapis.com/v1/public/yql'
 FIREEAGLE_USER_URL='https://fireeagle.yahooapis.com/api/0.1/user.json'
 YELP_REVIEW_URL='http://api.yelp.com/business_review_search'
 
@@ -41,6 +41,14 @@ def yql_example(request):
 def dump(request):
     return HttpResponse('<pre>' + escape(str(request)) + '</pre>')
 
+@yahoo_oauth.require_access_token
+def location(request):
+    location = yosdk.geocode(request, request.GET['address'])
+    lat = location['latitude']
+    lon = location['longitude']
+
+    return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
+
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
@@ -49,7 +57,15 @@ def fireeagle_location(request):
         token=access_token,
         request=request,
     )
-    return HttpResponse(unicode(response.read(), 'utf-8'))
+    body = unicode(response.read(), 'utf-8')
+    cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
+    if(cordinates):
+        [ lon, lat ] = cordinates
+    else:
+        [ lon, lat ] = cordinates[0]
+
+    return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
+
 
 @fireeagle_oauth.require_access_token
 def yelp_data_for_fireeagle_location(request):
@@ -96,6 +112,8 @@ def all_menus_yql(request):
 
 def places(request):
 
+    if 'lat' in request.GET and 'lon' in request.GET:
+
     lat = request.GET['lat']     # 37.4248085022
     lon = request.GET['lon']     # -122.074012756
 
@@ -104,9 +122,19 @@ def places(request):
         'format': 'json',
     }
 
-    restaurants = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))['query']['results']['Result']
+      response = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))
 
-    return HttpResponse(render('common/places.html', { 'places': restaurants }))
+      if 'query' in response:
+        restaurants = response['query']['results']['Result']
+      else:
+        restaurants = []
+
+      return HttpResponse(render('common/places.html', { 'places': restaurants }))
+
+    else:
+
+      return HttpResponseRedirect('/')
+
 
 def items(request):
 
@@ -117,7 +145,6 @@ def items(request):
     # allmenus_yql = select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
     # menupages_yql = select * from html where url='http://www.menupages.com/Partnermenu.asp?partner=7&restaurantId=10522&t=1235342717&auth=4b479e7b075fef07b533cd1acee30369' and xpath='//div[@id="restaurant-menu"]/table/tbody/tr/th'
 
-    access_token = request.session['yahoo_access_token']
     params = {
         'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
         'format': 'json',
