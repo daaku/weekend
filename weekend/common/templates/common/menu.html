@@ -12,7 +12,9 @@
 	        <div style="clear:both"></div>
 	        <div class="reviews" id="#">
 	            <div class="review">
-	                <div class="reviewer"><img src="{{ review.img }}"/>you</div>
+                    {% for friend in friends %}
+                    <div style="float:none"  class="reviewer"><img width="32" height="32" src="{{ friend.pic }}"/> {{ friend.nickname }} liked this</div>
+                    {% endfor %}
 	                    <div class="buttons">
 	                        {% if item.reviews.yours %}
 	                            {% ifequal 1 item.reviews.yours %}
