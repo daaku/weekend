@@ -1,155 +1,171 @@
 <style>
 #items{
-	width:500px;
+    width:500px;
 }
 
 #items .item{
-	border-bottom: thin solid #ddd;
-	padding-bottom: 1ex;
-	margin-bottom: 1ex;
-	display:block;
+    border-bottom: thin solid #ddd;
+    padding-bottom: 1ex;
+    margin-bottom: 1ex;
+    display:block;
 }
 #items .item .name{
-	float:left;
-	display:block;
+    float:left;
+    display:block;
 }
 #items .item .totals{
-	float:right;
+    float:right;
 }
 #items .item .totals .up,
 #items .item .totals .dn{
-	padding:1ex;
-	border:thin solid #ddd;
-	color:white;
-	font-weight:bold;
+    padding:1ex;
+    border:thin solid #ddd;
+    color:white;
+    font-weight:bold;
 }
 #items .item .totals .up{
-	background-color:#47D547;
+    background-color:#47D547;
 }
 #items .item .totals .dn{
-	background-color:red;
+    background-color:red;
 }
 
 
 #items .reviews{
-	display:none;
+    display:none;
 }
 #items .reviewer{
-	float:left;
+    float:left;
 }
 #items div.vote,
 #items .buttons{
-	float:right;
+    float:right;
 }
 #items .buttons a img{
-	border:none;
+    border:none;
 }
 </style>
 <div id="items">
 {% for item in menu %}
-	<div class="item">
-		<a class="name" href="#reviews_{{ item.iid }}">{{ item.name }}&nbsp;(${{ item.price }})</a>
-		<div class="totals">
-			<span class="up">{{ item.reviews.total.up }}</span><span class="dn">{{ item.reviews.total.dn }}</span>
-		</div>
-		<div style="clear:both"></div>
-		<div class="reviews" id="reviews_{{ item.iid }}">
-			<div class="review">
-				<div class="reviewer"><img src="{{ review.img }}"/>you</div>
-					<div class="buttons">
-						{% if item.reviews.yours %}
-							{% ifequal 1 item.reviews.yours %}
-							<a class="vote" href="/vote/?iid={{ item.iid }}&value=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/JMTQx1eyoa72XW6EvP2HuXlDmqcw4k1ptdnvPRp9MpoiMFnRKne7x8_D3L_N9NvbtasoaWewxjSyi9aYjrJg" /></a>
-								<a class="vote" href="/vote/?iid={{ item.iid }}&value=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--" /></a>
-							{% else %}
-								<a class="vote" href="/vote/?iid={{ item.iid }}&value=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-" /></a>
-								<a class="vote" href="/vote/?iid={{ item.iid }}&value=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/nMLkqzqyoa4kXRaNEaDLb7_4ZNlQ9eGgLa8v4L1iKbr88jg5uoccE2qxk3PZnIqq5jtaC1YZMppyeFUp8smoVJ0-" /></a>
-							{% endifequal %}
-						{% else %}
-							<a class="vote" href="/vote/?iid={{ item.iid }}&value=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-" /></a>
-							<a class="vote" href="/vote/?iid={{ item.iid }}&value=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--" /></a>
-						{% endif %}
-					</div>
-				<div style="clear:both"></div>
-			</div>
-			{% for review in item.reviews.by_name %}
-			<div class="review">
-				<div class="reviewer"><img src="{{ review.img }}"/>{{ review.name }}</div>
-				<div class="vote">
-					{% ifequal 1 review.vote %}
-						<img src="http://ic.apps.yahoo.com/v1/cache/public/JMTQx1eyoa72XW6EvP2HuXlDmqcw4k1ptdnvPRp9MpoiMFnRKne7x8_D3L_N9NvbtasoaWewxjSyi9aYjrJg" />
-					{% else %}
-						<img src="http://ic.apps.yahoo.com/v1/cache/public/nMLkqzqyoa4kXRaNEaDLb7_4ZNlQ9eGgLa8v4L1iKbr88jg5uoccE2qxk3PZnIqq5jtaC1YZMppyeFUp8smoVJ0-" />
-					{% endifequal %}
-				</div>
-				<div style="clear:both"></div>
-			</div>
-			{% endfor %}
-		</div>
-	</div>
+    <div class="item">
+        <a class="name" href="#reviews_{{ item.iid }}">{{ item.name }}&nbsp;(${{ item.price }})</a>
+        <div class="totals">
+            <span class="up">{{ item.reviews.total.up }}</span><span class="dn">{{ item.reviews.total.dn }}</span>
+        </div>
+        <div style="clear:both"></div>
+        <div class="reviews" id="reviews_{{ item.iid }}">
+            <div class="review">
+                <div class="reviewer"><img src="{{ review.img }}"/>you</div>
+                    <div class="buttons">
+                        {% if item.reviews.yours %}
+                            {% ifequal 1 item.reviews.yours %}
+                            <a class="vote" href="/vote/?iid={{ item.iid }}&value=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/JMTQx1eyoa72XW6EvP2HuXlDmqcw4k1ptdnvPRp9MpoiMFnRKne7x8_D3L_N9NvbtasoaWewxjSyi9aYjrJg" /></a>
+                                <a class="vote" href="/vote/?iid={{ item.iid }}&value=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--" /></a>
+                            {% else %}
+                                <a class="vote" href="/vote/?iid={{ item.iid }}&value=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-" /></a>
+                                <a class="vote" href="/vote/?iid={{ item.iid }}&value=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/nMLkqzqyoa4kXRaNEaDLb7_4ZNlQ9eGgLa8v4L1iKbr88jg5uoccE2qxk3PZnIqq5jtaC1YZMppyeFUp8smoVJ0-" /></a>
+                            {% endifequal %}
+                        {% else %}
+                            <a class="vote" href="/vote/?iid={{ item.iid }}&value=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-"/></a>
+                            <a class="vote" href="/vote/?iid={{ item.iid }}&value=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--"/></a>
+                        {% endif %}
+                    </div>
+                <div style="clear:both"></div>
+            </div>
+            {% for review in item.reviews.by_name %}
+            <div class="review">
+                <div class="reviewer"><img src="{{ review.img }}"/>{{ review.name }}</div>
+                <div class="vote">
+                    {% ifequal 1 review.vote %}
+                        <img src="http://ic.apps.yahoo.com/v1/cache/public/JMTQx1eyoa72XW6EvP2HuXlDmqcw4k1ptdnvPRp9MpoiMFnRKne7x8_D3L_N9NvbtasoaWewxjSyi9aYjrJg" />
+                    {% else %}
+                        <img src="http://ic.apps.yahoo.com/v1/cache/public/nMLkqzqyoa4kXRaNEaDLb7_4ZNlQ9eGgLa8v4L1iKbr88jg5uoccE2qxk3PZnIqq5jtaC1YZMppyeFUp8smoVJ0-" />
+                    {% endifequal %}
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endfor %}
 </div>
 <script>
 var items = document.getElementById('items'),
-	hasClass = function(node, className){
-		return new RegExp('[\b]*' + className + '[\b]*').test(node.className);
-	},
-	foreach = function(collection, callback){//tested: ff 3 mac
-		if(collection.length){//array or node list
-			for(var i = 0; i < collection.length; i++){
-				callback(i, collection[i]);
-			}
-		}else if(collection.hasOwnProperty){
-			for(var key in collection){
-				if(collection.hasOwnProperty(key)){
-					callback(key, collection[key]);
-				}
-			}
-		}else{
-			throw('each() error: collection (' + collection + ') is neither an array nor an object');
-		}
-	},
-	getElementsByClassName = function(elements, className){
-		var nodes = [];
-		foreach(elements, function(i,element){
-			if(hasClass(element, className)){
-				nodes.push(element);
-			}
-		});
-		return nodes;
-	},
-	handleClick=function(e){
-		var reviews,
-			href,
-			req,
-			buttons;
-		if(hasClass(e.target.parentNode, 'item')){
-			e.preventDefault();
-			href = e.target.href;
-			reviews = document.getElementById(href.substr(href.indexOf('#') + 1));//get el by anchor tag text
-			reviews.style.display = ('block' === reviews.style.display) ? 'none' : 'block';
-		}else if(hasClass(e.target, 'vote')){
-			e.preventDefault();
-			var buttons = e.target.
-			href = e.target.href;
-			//set both buttons to default
-			
-			buttons = e.target.parentNode.getElementsByTagName('img');console.log(buttons);
-			//set target to active
-			req = false;
-		    if(window.XMLHttpRequest) {
-		    	try {
-					req = new XMLHttpRequest();
-		        } catch(e) {
-					req = false;
-		        }
-		    }
-			if(req) {
-				req.onreadystatechange = function(){};
-				req.open("POST", href, true);
-				req.send("");
-			}
-		}
-	}; 
+    hasClass = function(node, className){
+        return new RegExp('[\b]*' + className + '[\b]*').test(node.className);
+    },
+    foreach = function(collection, callback){//tested: ff 3 mac
+        if(collection.length){//array or node list
+            for(var i = 0; i < collection.length; i++){
+                callback(i, collection[i]);
+            }
+        }else if(collection.hasOwnProperty){
+            for(var key in collection){
+                if(collection.hasOwnProperty(key)){
+                    callback(key, collection[key]);
+                }
+            }
+        }else{
+            throw('each() error: collection (' + collection + ') is neither an array nor an object');
+        }
+    },
+    getElementsByClassName = function(elements, className){
+        var nodes = [];
+        foreach(elements, function(i,element){
+            if(hasClass(element, className)){
+                nodes.push(element);
+            }
+        });
+        return nodes;
+    },
+    makeRequest = function(url){//FF/Safari only
+        var req = false;
+        if(window.XMLHttpRequest) {
+            try {
+                req = new XMLHttpRequest();
+            } catch(e) {
+                req = false;
+            }
+        }
+        if(req) {
+            try{
+                req.onreadystatechange = function(){};
+                req.open("POST", url, true);
+                req.send("");
+            }catch(e){
+                console.log(e);
+            }
+        }
+    },
+    handleClick=function(e){
+        e.preventDefault();    
+        var reviews,
+            href,
+            req,
+            buttons,
+            default_urls = [
+                'http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-',
+                'http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--'
+            ],
+            active_urls = [
+                'http://ic.apps.yahoo.com/v1/cache/public/nMLkqzqyoa4kXRaNEaDLb7_4ZNlQ9eGgLa8v4L1iKbr88jg5uoccE2qxk3PZnIqq5jtaC1YZMppyeFUp8smoVJ0-',
+                'http://ic.apps.yahoo.com/v1/cache/public/JMTQx1eyoa72XW6EvP2HuXlDmqcw4k1ptdnvPRp9MpoiMFnRKne7x8_D3L_N9NvbtasoaWewxjSyi9aYjrJg'
+            ];
+        if(hasClass(e.target.parentNode, 'item')){//then it's the a 
+            href = e.target.href;
+            reviews = document.getElementById(href.substr(href.indexOf('#') + 1));//get el by anchor tag text
+            reviews.style.display = ('block' === reviews.style.display) ? 'none' : 'block';
+        }else if(hasClass(e.target.parentNode, 'vote')){//then it's the img tag within an a tag in a vote button block
+            href = e.target.parentNode.href;
+            makeRequest(href);//register vote
+            //set both buttons to default
+            buttons = e.target.parentNode.parentNode.getElementsByTagName('img');
+            foreach(buttons, function(i, button){
+                button.src = default_urls[i];
+            });
+            //set src of target to active
+            e.target.src = active_urls[href.substr(-1)];//last char in vote href is either 1 or 0
+        }
+    }; 
 items.onclick=handleClick;
 </script>
