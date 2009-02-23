@@ -67,7 +67,7 @@ def items_in_graph(request):
         to_return.append({
             'guid': profile['guid'],
             'nickname': profile['nickname'],
-            'pic': profiles['image']['imageUrl'],
+            'pic': profile['image']['imageUrl'],
             'item': review.item,
             'restaurant': review.restaurant,
             'votes': review.votes,
