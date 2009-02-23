@@ -43,6 +43,14 @@ def dump(request):
     return HttpResponse('<pre>' + escape(str(request)) + '</pre>')
 
 @yahoo_oauth.require_access_token
+def location(request):
+    location = yosdk.geocode(request, request.GET['address'])
+    lat = location['latitude']
+    lon = location['longitude']
+
+    return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
+
+@yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
@@ -51,7 +59,15 @@ def fireeagle_location(request):
         token=access_token,
         request=request,
     )
-    return HttpResponse(unicode(response.read(), 'utf-8'))
+    body = unicode(response.read(), 'utf-8')
+    cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
+    if(cordinates):
+        [ lon, lat ] = cordinates
+    else:
+        [ lon, lat ] = cordinates[0]
+ 
+    return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
+
 
 @yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
