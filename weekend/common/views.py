@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response as render
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.html import escape
@@ -41,7 +41,6 @@ def yql_example(request):
 def dump(request):
     return HttpResponse('<pre>' + escape(str(request)) + '</pre>')
 
-@yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
@@ -52,7 +51,6 @@ def fireeagle_location(request):
     )
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
-@yahoo_oauth.require_access_token
 @fireeagle_oauth.require_access_token
 def yelp_data_for_fireeagle_location(request):
     access_token = request.session['fireeagle_access_token']
@@ -79,9 +77,9 @@ def yelp_data_for_fireeagle_location(request):
 def all_menus_yql(request):
     yql = """
     select * from html where url="http://www.allmenus.com/ca/palo-alto/46901-osteria/menu/" and xpath='//div[@class="menu_item"]/span'
-    
+
     select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
-    
+
     """
     access_token = request.session['yahoo_access_token']
     params = {
@@ -100,7 +98,7 @@ def places(request):
 
     lat = request.GET['lat']     # 37.4248085022
     lon = request.GET['lon']     # -122.074012756
-    
+
     params = {
         'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
         'format': 'json',
@@ -111,14 +109,14 @@ def places(request):
     return HttpResponse(render('common/places.html', { 'places': restaurants }))
 
 def items(request):
-  
+
     boorah_id = request.GET['boorah_id']
-    
+
     # get restaurant json - then fetch menu url - then fetch yql menu
 
     # allmenus_yql = select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
     # menupages_yql = select * from html where url='http://www.menupages.com/Partnermenu.asp?partner=7&restaurantId=10522&t=1235342717&auth=4b479e7b075fef07b533cd1acee30369' and xpath='//div[@id="restaurant-menu"]/table/tbody/tr/th'
-    
+
     access_token = request.session['yahoo_access_token']
     params = {
         'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
@@ -131,7 +129,6 @@ def items(request):
 
 
 @yahoo_oauth.require_access_token
-@fireeagle_oauth.require_access_token
 def reviews(request):
     return HttpResponse()
 

@@ -18,6 +18,8 @@ class DBOAuthConsumerApp(OAuthConsumerApp):
         @wraps(view)
         def _do(request, *args, **kwargs):
             if access_token_key in request.session:
+                access_token = request.session[access_token_key]
+                request.user = User.objects.get(username=access_token['xoauth_yahoo_guid'])
                 return view(request, *args, **kwargs)
 
             if request.user and request.user.is_authenticated():
@@ -38,7 +40,7 @@ class DBOAuthConsumerApp(OAuthConsumerApp):
         guid = access_token['xoauth_yahoo_guid']
         json_access_token = json.dumps(access_token)
         if request.user and request.user.is_anonymous():
-            user, created = User.objects.get_or_create(username=guid)
+            user, created = User.objects.get_or_create(username=guid, password=guid)
             request.user = user
             profile, created = UserProfile.objects.get_or_create(yahoo_guid=guid, user=user)
             profile.yahoo_access_token = json_access_token
