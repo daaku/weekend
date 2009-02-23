@@ -149,7 +149,7 @@ def menu(request):
 
             pass
 
-    return HttpResponse(render('common/menu.html', { 'menu': menu, 'restaurant': quote(restaurant) }))
+        return HttpResponse(render('common/menu.html', { 'menu': menu, 'restaurant': quote(restaurant) }))
 
     else:
       
