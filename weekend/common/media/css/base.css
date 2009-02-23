@@ -27,10 +27,14 @@ div.center {
     text-align: center;
 }
 
+#places ul
+{
+	list-style-type: none;
+}
+
 #places li
 {
 	margin-bottom: 1ex;
-	list-style-type: none;
 }
 #places .addr{
     font-style:italic;
