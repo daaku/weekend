@@ -55,7 +55,7 @@ def items_in_graph(request):
     guid = request.user.username
     graph = yosdk.social_graph(request)
     guids = [p['guid'] for p in graph] + [guid]
-    logging.debug(guids)
+    logging.error(guids)
     friends = User.objects.filter(username__in=guids)
     reviews = Review.objects.filter(user__in=friends)
     return HttpResponse(escape(str(reviews)))
