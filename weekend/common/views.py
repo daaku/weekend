@@ -29,7 +29,7 @@ def location(request):
     lat = location['latitude']
     lon = location['longitude']
 
-    return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
+    return HttpResponseRedirect("/places/?lat=%s&lon=%s" % (lat, lon))
 
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
@@ -41,12 +41,13 @@ def fireeagle_location(request):
     )
     body = unicode(response.read(), 'utf-8')
     cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
-    if cordinates:
-        [ lon, lat ] = cordinates
+    if isinstance(cordinates[0], list) and isinstance(cordinates[0][0], list):
+        (lat, lon) = cordinates[0][0]
+    elif isinstance(cordinates[0], list):
+        (lat, lon) = cordinates[0]
     else:
-        [ lon, lat ] = cordinates[0]
-
-    return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
+        (lat, lon) = cordinates
+    return HttpResponseRedirect("/places/?lat=%s&lon=%s" % (lat, lon))
 
 def places(request):
     if 'lat' in request.GET and 'lon' in request.GET:

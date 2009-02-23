@@ -4,7 +4,7 @@ import time
 import logging
 import json
 import random
-
+import urllib
 YOS_URL='http://social.yahooapis.com/v1'
 YQL_URL='http://query.yahooapis.com/v1/yql'
 
@@ -46,7 +46,7 @@ def updates(request, descr, title, link):
 def geocode(request, location):
     access_token = request.session['yahoo_access_token']
     params = {
-        'q': 'select * from geo.places where text="' + location + '"',
+        'q': 'select * from geo.places where text="' + urllib.quote(location) + '"',
         'format': 'json',
     }
     response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
