@@ -14,6 +14,7 @@ from weekend.yahoo_oauth import app as yahoo_oauth
 import weekend.yosdk as yosdk
 import collections
 import json
+import logging
 
 YQL_URL='http://query.yahooapis.com/v1/yql'
 YQL_PUBLIC_URL='http://query.yahooapis.com/v1/public/yql'
@@ -54,6 +55,7 @@ def items_in_graph(request):
     guid = request.user.username
     graph = yosdk.social_graph(request)
     guids = [p['guid'] for p in graph] + [guid]
+    logging.debug(guids)
     friends = User.objects.filter(username__in=guids)
     reviews = Review.objects.filter(user__in=friends)
     return HttpResponse(escape(str(reviews)))
