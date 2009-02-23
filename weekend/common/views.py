@@ -10,6 +10,8 @@ from weekend.common.models import Review
 from weekend.common.forms import ReviewForm
 from weekend.fireeagle_oauth import app as fireeagle_oauth
 from weekend.yahoo_oauth import app as yahoo_oauth
+from urlencoding import parse_qs, compose_qs
+from urllib import quote
 
 import weekend.yosdk as yosdk
 import collections
@@ -66,7 +68,7 @@ def places(request):
         lon = request.GET['lon']     # -122.074012756
   
         params = {
-            'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
+            'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=15&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
             'format': 'json',
         }
 
@@ -82,26 +84,65 @@ def places(request):
     else:
         return HttpResponseRedirect('/')
 
-def items(request):
-    boorah_id = request.GET['boorah_id']
+def menu(request):
 
-    # get restaurant json - then fetch menu url - then fetch yql menu
+    if 'lat' in request.GET and 'lon' in request.GET and 'restaurant' in request.GET:
 
-    # allmenus_yql = select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
-    # menupages_yql = select * from html where url='http://www.menupages.com/Partnermenu.asp?partner=7&restaurantId=10522&t=1235342717&auth=4b479e7b075fef07b533cd1acee30369' and xpath='//div[@id="restaurant-menu"]/table/tbody/tr/th'
+        lat = request.GET['lat']                   # 37.4248085022
+        lon = request.GET['lon']                   # -122.074012756
+        restaurant = request.GET['restaurant']     # Country Deli
+  
+        params = {
+            'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=15&sort=distance&start=0&lat=%s&long=%s&name=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, quote(restaurant), settings.BOORAH_API_KEY),
+            'format': 'json',
+        }
+        response = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))
+        
+        menu = []
+        try:
 
-    params = {
-        'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
-        'format': 'json',
-    }
+            # get restaurant json - then fetch menu url - then fetch yql menu
 
-    items = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))['query']['results']['Result']
+            # allmenus_yql = select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
+            # menupages_yql = select * from html where url='http://www.menupages.com/Partnermenu.asp?partner=7&restaurantId=10522&t=1235342717&auth=4b479e7b075fef07b533cd1acee30369' and xpath='//div[@id="restaurant-menu"]/table/tbody/tr/th'
+
+            restaurant = response['query']['results']['Result'][0]
+            link = restaurant['LinkSet']['Link']
+                
+            if link['type'] == 'menu':
+                params = {
+                    'q': "select * from html where url='%s' and xpath = '//iframe'" % (link['url']),
+                    'format': 'json',
+                }
+                menu = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))['query']['results']['iframe']['src']
+
+                if 'allmenus' in menu:
+
+                    response = yahoo_oauth.make_signed_req(menu)
+                    response = yahoo_oauth.make_signed_req('http://allmenus.com' + response.getheader('location'))
+                
+                    params = {
+                        'q': "select * from html where url='%s' and xpath='//div[@class=\"menu_item\"]'" % ('http://allmenus.com' + response.getheader('location')),
+                        'format': 'json',
+                    }
+
+                    data = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))
+                    menu = data['query']['results']['div']
+
+                
+        except:
+
+            pass
+
+        return HttpResponse(render('common/menu.html', { 'menu': menu }))
+
+    else:
+      
+        return HttpResponseRedirect('/')
+
 
     return HttpResponse()
 
-@yahoo_oauth.require_access_token
-def reviews(request):
-    return HttpResponse()
 
 @yahoo_oauth.require_access_token
 def add_review(request):
@@ -121,54 +162,11 @@ def add_review(request):
         form = ReviewForm()
     return HttpResponse(render('common/review.html', {'form': form}))
 
-# @yahoo_oauth.require_access_token
-def menu(request):
-    pid = request.GET['pid']
-    # get_menu(pid)
-    # reviews = get_reviews(pid)
-    menu = [
-        {
-            'iid':pid+'itema',
-            'name':'item a',
-            'price':1.00,
-            'reviews':{
-                'total':{'up':2,'dn':1},
-                'by_name': [
-                    {'uid':'guid1', 'name':'friend 1', 'img':'http://...sjdlfj.jpg', 'vote':1},
-                    {'uid':'guid2', 'name':'friend 2', 'img':'http://...friend2.jpg', 'vote':1},
-                    {'uid':'guid3', 'name':'friend 3', 'img':'http://...friend3.jpg', 'vote':0}
-                ]
-            }
-        },
-        {
-            'iid':pid+'itemb',
-            'name':'item b',
-            'price':2.50,
-            'reviews':{
-                'total': {'up':1,'dn':2},
-                'by_name': [
-                    {'uid':'guid4', 'name':'friend 4', 'img':'http://...friend4.jpg', 'vote':0},
-                    {'uid':'guid2', 'name':'friend 2', 'img':'http://...friend2.jpg', 'vote':0},
-                    {'uid':'guid6', 'name':'friend 6', 'img':'http://...friend6.jpg', 'vote':1}
-                ]
-            }
-        },
-        {
-            'iid':pid+'pepsi',
-            'name':'pepsi',
-            'price':4.00,
-            'reviews':{
-                'total': {'up':2,'dn':0},
-                'yours':1,
-                'by_name': [
-                    {'uid':'guid3', 'name':'friend 3', 'img':'http://...friend3.jpg', 'vote':1},
-                    {'uid':'guid6', 'name':'friend 6', 'img':'http://...friend6.jpg', 'vote':1}
-                ]
-            }
-        }
-    ]
 
-    return render('common/menu.html', {'menu':menu});
+@yahoo_oauth.require_access_token
+def reviews(request):
+    return HttpResponse()
+
 
 def vote(request):
     return HttpResponse(unicode('voted!', 'utf-8'))
