@@ -11,6 +11,7 @@
 </style>
 <div id="places">
 {% for place in places %}
+{{ place }}
 	<a href="/menu/?pid={{ place.id }}" class="place">
 		<div class="name">{{ place.name }}</div>
 		<div class="addr">{{ place.addr }}</div>
