@@ -41,11 +41,12 @@ def fireeagle_location(request):
     )
     body = unicode(response.read(), 'utf-8')
     cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
-    if cordinates:
-        [ lon, lat ] = cordinates
+    if isinstance(cordinates[0], list) and isinstance(cordinates[0][0], list):
+        (lat, lon) = cordinates[0][0]
+    elif isinstance(cordinates[0], list):
+        (lat, lon) = cordinates[0]
     else:
-        [ lon, lat ] = cordinates[0]
-
+        (lat, lon) = cordinates
     return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
 
 def places(request):
