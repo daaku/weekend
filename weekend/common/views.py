@@ -104,6 +104,7 @@ def menu(request):
         lat = request.GET['lat']                   # 37.4248085022
         lon = request.GET['lon']                   # -122.074012756
         restaurant = request.GET['restaurant']     # Country Deli
+        restaurantName= request.GET['restaurant']     # Country Deli
 
         friends = items_in_graph(request, restaurant)
   
@@ -121,7 +122,7 @@ def menu(request):
             # allmenus_yql = select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
             # menupages_yql = select * from html where url='http://www.menupages.com/Partnermenu.asp?partner=7&restaurantId=10522&t=1235342717&auth=4b479e7b075fef07b533cd1acee30369' and xpath='//div[@id="restaurant-menu"]/table/tbody/tr/th'
 
-            restaurant = response['query']['results']['Result'][0]
+	    restaurant = response['query']['results']['Result'][0]
             link = restaurant['LinkSet']['Link']
                 
             if link['type'] == 'menu':
@@ -149,7 +150,7 @@ def menu(request):
 
             pass
 
-        return HttpResponse(render('common/menu.html', { 'menu': menu, 'friends': friends  }))
+        return HttpResponse(render('common/menu.html', { 'menu': menu, 'friends': friends, 'restaurant': restaurantName  }))
 
     else:
       

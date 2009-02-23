@@ -16,15 +16,15 @@
 	                    <div class="buttons">
 	                        {% if item.reviews.yours %}
 	                            {% ifequal 1 item.reviews.yours %}
-	                            <a class="vote" href="/review/?name={{ item.name }}&restaurant={{ item.restaurant }}&votes=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/JMTQx1eyoa72XW6EvP2HuXlDmqcw4k1ptdnvPRp9MpoiMFnRKne7x8_D3L_N9NvbtasoaWewxjSyi9aYjrJg" /></a>
-	                                <a class="vote" href="/review/?name={{ item.name }}&restaurant={{ item.restaurant }}&votes=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--" /></a>
+	                            <a class="vote" href="/review/?name={{ item.name|escape }}&restaurant={{ restaurant|escape }}&votes=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/JMTQx1eyoa72XW6EvP2HuXlDmqcw4k1ptdnvPRp9MpoiMFnRKne7x8_D3L_N9NvbtasoaWewxjSyi9aYjrJg" /></a>
+	                                <a class="vote" href="/review/?name={{ item.name|escape }}&restaurant={{ restaurant|escape }}&votes=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--" /></a>
 	                            {% else %}
-	                                <a class="vote" href="/review/?name={{ item.name }}&restaurant={{ item.restaurant }}&votes=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-" /></a>
-	                                <a class="vote" href="/review/?name={{ item.name }}&restaurant={{ item.restaurant }}&votes=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/nMLkqzqyoa4kXRaNEaDLb7_4ZNlQ9eGgLa8v4L1iKbr88jg5uoccE2qxk3PZnIqq5jtaC1YZMppyeFUp8smoVJ0-" /></a>
+	                                <a class="vote" href="/review/?name={{ item.name|escape }}&restaurant={{ restaurant|escape }}&votes=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-" /></a>
+	                                <a class="vote" href="/review/?name={{ item.name|escape }}&restaurant={{ restaurant|escape }}&votes=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/nMLkqzqyoa4kXRaNEaDLb7_4ZNlQ9eGgLa8v4L1iKbr88jg5uoccE2qxk3PZnIqq5jtaC1YZMppyeFUp8smoVJ0-" /></a>
 	                            {% endifequal %}
 	                        {% else %}
-	                            <a class="vote" href="/review/?name={{ item.name }}&restaurant={{ item.restaurant }}&votes=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-"/></a>
-	                            <a class="vote" href="/review/?name={{ item.name }}&restaurant={{ item.restaurant }}&votes=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--"/></a>
+	                            <a class="vote" href="/review/?name={{ item.name|escape }}&restaurant={{ restaurant|escape }}&votes=1"><img src="http://ic.apps.yahoo.com/v1/cache/public/oxbPFxCyoa4vmhhlEi_2ejKBs.nwzecdFaWm5Tp4Je0c9XHStVqRto.PpJqcHPQq8wgrMuncNnX5m1jE33CGkgycw7RY_ss-"/></a>
+	                            <a class="vote" href="/review/?name={{ item.name|escape }}&restaurant={{ restaurant|escape }}&votes=0"><img src="http://ic.apps.yahoo.com/v1/cache/public/j3TOF9eyoa52nlX.Nu7f92mA.xmlsLvIDo3qLxDaIvndjtgEJG_3XrFdlIu4ZXpOparhZr_R3a.nc_nKUSVyON654QwWa66WCQ--"/></a>
 	                        {% endif %}
 	                    </div>
 	                <div style="clear:both"></div>

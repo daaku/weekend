@@ -1,6 +1,7 @@
 body {
     font-family: "Century Gothic";
-    width: 94%;
+    font-size: 150%;
+    font-weight: bold;
 }
 
 img {
@@ -16,11 +17,6 @@ hr {
 fieldset {
     display: inline;
     width: auto;
-}
-
-div#foods {
-    width: 80%;
-    margin: 2em auto;
 }
 
 div.center {
