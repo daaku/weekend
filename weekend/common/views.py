@@ -54,13 +54,25 @@ def fireeagle_location(request):
 
 @yahoo_oauth.require_access_token
 def items_in_graph(request):
-    guid = request.user.username
-    graph = yosdk.social_graph(request)
-    guids = [p['guid'] for p in graph] + [guid]
-    logging.error(guids)
-    friends = User.objects.filter(username__in=guids)
+    profiles = {}
+    for p in yosdk.social_graph(request):
+        profiles[p['guid']] = p
+
+    friends = User.objects.filter(username__in=profiles.keys())
     reviews = Review.objects.filter(user__in=friends)
-    return HttpResponse(escape(str(reviews)))
+    logging.error(reviews)
+    to_return = []
+    for review in reviews:
+        profile = profiles[review.user.username]
+        to_return.append({
+            'guid': profile['guid'],
+            'nickname': profile['nickname'],
+            'pic': profiles['image']['imageUrl'],
+            'item': review.item,
+            'restaurant': review.restaurant,
+            'votes': review.votes,
+        })
+    return HttpResponse(json.dumps(to_return))
 
 def places(request):
     if 'lat' in request.GET and 'lon' in request.GET:
