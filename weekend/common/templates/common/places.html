@@ -2,25 +2,21 @@
 {% block content %}
 <style>
 #places a{
-	display:block;
-	margin-bottom:10px;
+    margin-bottom:10px;
 }
 #places a .addr{
-	font-style:italic;
+    font-style:italic;
 }
 </style>
-<div id="places">
+<ul id="places">
 {% for place in places %}
-{{ place }}
-	<a href="/menu/?pid={{ place.id }}" class="place">
-		<div class="name">{{ place.name }}</div>
-		<div class="addr">{{ place.addr }}</div>
-	</a>
+    <li>
+        <a href="/menu/?lat={{ place.Address.Latitude }}&lon={{ place.Address.Longitude }}&restaurant={{ place.RestaurantName }}" class="place">
+            <span class="name">{{ place.RestaurantName }}</span>
+            <span class="phone">({{ place.Address.Phone }})</span>
+            <span class="addr">{{ place.Address.Street1 }}, {{ place.Address.City }}, {{ place.Address.State }}</span>
+        </a>
+    </li>
 {% endfor %}
-</div>
-update location?
-<form action="/update/">
-	<input name="address" /><br/>
-	<input name="submit" type="submit" value="go" />
-</form>
+</ul>
 {% endblock %}
