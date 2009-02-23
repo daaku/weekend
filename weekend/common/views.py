@@ -45,11 +45,11 @@ def fireeagle_location(request):
     body = unicode(response.read(), 'utf-8')
     cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
     if isinstance(cordinates[0], list) and isinstance(cordinates[0][0], list):
-        (lat, lon) = cordinates[0][0]
+        (lon, lat) = cordinates[0][0]
     elif isinstance(cordinates[0], list):
-        (lat, lon) = cordinates[0]
+        (lon, lat) = cordinates[0]
     else:
-        (lat, lon) = cordinates
+        (lon, lat) = cordinates
     return HttpResponseRedirect("/places/?lat=%s&lon=%s" % (lat, lon))
 
 @yahoo_oauth.require_access_token
