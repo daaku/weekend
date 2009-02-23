@@ -53,7 +53,7 @@ def fireeagle_location(request):
     return HttpResponseRedirect("/places/?lat=%s&lon=%s" % (lat, lon))
 
 @yahoo_oauth.require_access_token
-def items_in_graph(request):
+def items_in_graph(request, restaurant):
     profiles = {}
     for p in yosdk.social_graph(request):
         profiles[p['guid']] = p
@@ -64,15 +64,16 @@ def items_in_graph(request):
     to_return = []
     for review in reviews:
         profile = profiles[review.user.username]
-        to_return.append({
-            'guid': profile['guid'],
-            'nickname': profile['nickname'],
-            'pic': profile['image']['imageUrl'],
-            'item': review.item,
-            'restaurant': review.restaurant,
-            'votes': review.votes,
-        })
-    return HttpResponse(json.dumps(to_return))
+        if restaurant == review.restaurant:
+            to_return.append({
+                'guid': profile['guid'],
+                'nickname': profile['nickname'],
+                'pic': profile['image']['imageUrl'],
+                'item': review.item,
+                'restaurant': review.restaurant,
+                'votes': review.votes,
+            })
+    return HttpResponse(to_return)
 
 def places(request):
     if 'lat' in request.GET and 'lon' in request.GET:
@@ -103,6 +104,8 @@ def menu(request):
         lat = request.GET['lat']                   # 37.4248085022
         lon = request.GET['lon']                   # -122.074012756
         restaurant = request.GET['restaurant']     # Country Deli
+
+        friends = items_in_graph(request, restaurant)
   
         params = {
             'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=15&sort=distance&start=0&lat=%s&long=%s&name=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, quote(restaurant), settings.BOORAH_API_KEY),
