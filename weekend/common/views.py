@@ -114,26 +114,26 @@ def places(request):
 
     if 'lat' in request.GET and 'lon' in request.GET:
 
-    lat = request.GET['lat']     # 37.4248085022
-    lon = request.GET['lon']     # -122.074012756
+        lat = request.GET['lat']     # 37.4248085022
+        lon = request.GET['lon']     # -122.074012756
+  
+        params = {
+            'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
+            'format': 'json',
+        }
 
-    params = {
-        'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=5&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
-        'format': 'json',
-    }
+        response = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))
 
-      response = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))
-
-      if 'query' in response:
-        restaurants = response['query']['results']['Result']
-      else:
-        restaurants = []
-
-      return HttpResponse(render('common/places.html', { 'places': restaurants }))
+        if 'query' in response:
+            restaurants = response['query']['results']['Result']
+        else:
+            restaurants = []
+        
+        return HttpResponse(render('common/places.html', { 'places': restaurants }))
 
     else:
-
-      return HttpResponseRedirect('/')
+      
+        return HttpResponseRedirect('/')
 
 
 def items(request):
