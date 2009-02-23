@@ -150,7 +150,13 @@ def add_review(request):
         base_review = Review(user=request.user)
         form = ReviewForm(request.POST, instance=base_review)
         if form.is_valid():
-            form.save()
+            review = form.save()
+            yosdk.updates(
+                request,
+                " add the item " + review.item + " for the restaurant " + review.restaurant,
+                "", #FIXME
+                "http://weekend.daaku.org/"
+             )
             return HttpResponseRedirect('/reviews/')
     else:
         form = ReviewForm()

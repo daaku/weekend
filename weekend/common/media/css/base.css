@@ -1,3 +1,53 @@
 body {
     font-family: "Century Gothic";
 }
+
+#places li{
+    margin-bottom:1ex;
+}
+#places .addr{
+    font-style:italic;
+}
+
+#menu {
+    width:500px;
+}
+#menu .item{
+    border-bottom: thin solid #ddd;
+    padding-bottom: 1ex;
+    margin-bottom: 1ex;
+    display:block;
+}
+#menu .item .name{
+    float:left;
+    display:block;
+}
+#menu .item .totals{
+    float:right;
+}
+#menu .item .totals .up,
+#menu .item .totals .dn{
+    padding:1ex;
+    border:thin solid #ddd;
+    color:white;
+    font-weight:bold;
+}
+#menu .item .totals .up{
+    background-color:#47D547;
+}
+#menu .item .totals .dn{
+    background-color:red;
+}
+#menu .reviews{
+    display:none;
+}
+#menu .reviewer{
+    float:left;
+}
+#menu div.vote,
+#menu .buttons{
+    float:right;
+}
+#menu .buttons a img{
+    border:none;
+}
