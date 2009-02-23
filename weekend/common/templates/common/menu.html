@@ -3,7 +3,7 @@
 <div id="menu">
 {% for item in menu %}
     <div class="item">
-        <a class="name" href="#reviews_{{ item.iid }}">{{ item.name }}&nbsp;(${{ item.price }})</a>
+        <a class="name" href="#reviews_{{ item.iid }}">{{ item.name }}</a>
         <div class="totals">
             <span class="up">{{ item.reviews.total.up }}</span><span class="dn">{{ item.reviews.total.dn }}</span>
         </div>
