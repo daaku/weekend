@@ -24,24 +24,6 @@ def index(request):
     return render('common/index.html')
 
 @yahoo_oauth.require_access_token
-def yql_example(request):
-    access_token = request.session['yahoo_access_token']
-    params = {
-        'q': 'select * from social.profile where guid in (select guid from social.connections where owner_guid=me)',
-        'format': 'json',
-    }
-    response = yahoo_oauth.make_signed_req(
-        YQL_URL,
-        content=params,
-        token=access_token,
-        request=request,
-    )
-    return HttpResponse(unicode(response.read(), 'utf-8'))
-
-def dump(request):
-    return HttpResponse('<pre>' + escape(str(request)) + '</pre>')
-
-@yahoo_oauth.require_access_token
 def location(request):
     location = yosdk.geocode(request, request.GET['address'])
     lat = location['latitude']
@@ -59,13 +41,12 @@ def fireeagle_location(request):
     )
     body = unicode(response.read(), 'utf-8')
     cordinates = json.loads(body)['user']['location_hierarchy'][0]['geometry']['coordinates']
-    if(cordinates):
+    if cordinates:
         [ lon, lat ] = cordinates
     else:
         [ lon, lat ] = cordinates[0]
 
     return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
-
 
 @fireeagle_oauth.require_access_token
 def yelp_data_for_fireeagle_location(request):
@@ -89,31 +70,8 @@ def yelp_data_for_fireeagle_location(request):
     })
     return HttpResponse(unicode(response.read(), 'utf-8'))
 
-@yahoo_oauth.require_access_token
-def all_menus_yql(request):
-    yql = """
-    select * from html where url="http://www.allmenus.com/ca/palo-alto/46901-osteria/menu/" and xpath='//div[@class="menu_item"]/span'
-
-    select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
-
-    """
-    access_token = request.session['yahoo_access_token']
-    params = {
-        'q': yql,
-        'format': 'json',
-    }
-    response = yahoo_oauth.make_signed_req(
-        YQL_URL,
-        content=params,
-        token=access_token,
-        request=request,
-    )
-    return HttpResponse(unicode(response.read(), 'utf-8'))
-
 def places(request):
-
     if 'lat' in request.GET and 'lon' in request.GET:
-
         lat = request.GET['lat']     # 37.4248085022
         lon = request.GET['lon']     # -122.074012756
   
@@ -132,12 +90,9 @@ def places(request):
         return HttpResponse(render('common/places.html', { 'places': restaurants }))
 
     else:
-      
         return HttpResponseRedirect('/')
 
-
 def items(request):
-
     boorah_id = request.GET['boorah_id']
 
     # get restaurant json - then fetch menu url - then fetch yql menu
@@ -154,7 +109,6 @@ def items(request):
 
     return HttpResponse()
 
-
 @yahoo_oauth.require_access_token
 def reviews(request):
     return HttpResponse()
@@ -170,16 +124,6 @@ def add_review(request):
     else:
         form = ReviewForm()
     return HttpResponse(render('common/review.html', {'form': form}))
-
-@yahoo_oauth.require_access_token
-def get_or_create_profile(user):
-  try:
-      profile = user.get_profile()
-  except ObjectDoesNotExist:
-      profile = UserProfile(guid='12345667890', user=user)
-      profile.save()
-  return profile
-
 
 # @yahoo_oauth.require_access_token
 def menu(request):
