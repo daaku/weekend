@@ -48,28 +48,6 @@ def fireeagle_location(request):
 
     return HttpResponseRedirect("/restaurants/?lat=%s&lon=%s" % (lat, lon))
 
-@fireeagle_oauth.require_access_token
-def yelp_data_for_fireeagle_location(request):
-    access_token = request.session['fireeagle_access_token']
-    response = fireeagle_oauth.make_signed_req(
-        FIREEAGLE_USER_URL,
-        token=access_token,
-        request=request,
-    )
-    body = unicode(response.read(), 'utf-8')
-    user = json.loads(body)
-    [[tl_long, tl_lat], [br_long, br_lat]] = json.loads(body)['user']['location_hierarchy'][0]['geometry']['bbox']
-    response = make_request(YELP_REVIEW_URL, content={
-        'term': 'pizza',
-        'br_lat': br_lat,
-        'br_long': br_long,
-        'tl_lat': tl_lat,
-        'tl_long': tl_long,
-        'radius': 5,
-        'ywsid': settings.YELP_KEY,
-    })
-    return HttpResponse(unicode(response.read(), 'utf-8'))
-
 def places(request):
     if 'lat' in request.GET and 'lon' in request.GET:
         lat = request.GET['lat']     # 37.4248085022

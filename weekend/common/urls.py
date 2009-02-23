@@ -4,7 +4,6 @@ import weekend.common.views as views
 
 urlpatterns = patterns('',
     (r'^$', views.index),
-    (r'yql-example/$', views.yql_example),
 
     (r'places/$', views.places),
     (r'menu/$', views.menu),
@@ -15,8 +14,4 @@ urlpatterns = patterns('',
     (r'fireeagle-location/$', views.fireeagle_location),
 
     (r'location/$', views.location),
-
-    (r'yelp-reviews/$', views.yelp_data_for_fireeagle_location),
-    (r'all-menus/$', views.all_menus_yql),
-    (r'dump/$', views.dump),
 )
