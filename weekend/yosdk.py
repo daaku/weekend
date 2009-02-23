@@ -11,7 +11,7 @@ YQL_URL='http://query.yahooapis.com/v1/yql'
 def social_graph(request):
     access_token = request.session['yahoo_access_token']
     params = {
-        'q': 'select * from social.profile where guid in (select guid from social.connections where owner_guid=me)',
+        'q': 'select * from social.profile (0, 9999) where guid in (select guid from social.connections where owner_guid=me)',
         'format': 'json',
     }
     response = yahoo_oauth.make_signed_req(YQL_URL, content=params, token=access_token, request=request)
