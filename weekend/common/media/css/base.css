@@ -84,8 +84,8 @@ div.center {
 }
 
 .rowodd {
-   color: black;
+   background-color: black;
 }
 .roweven {
-   color: #FFFABF;
+   background-color: #FFFFCC;
 }
