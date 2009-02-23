@@ -1,10 +1,10 @@
 {% extends "base.html" %}
+{% block content %}
 
 <h1>Fooods</h1>
 
-back to <a href="#" onclick="void(window.history.back())">location</a>
+<p>back to <a href="#" onclick="void(window.history.back())">location</a></p>
 
-{% block content %}
 <ul id="places">
 {% for place in places %}
     <li>
