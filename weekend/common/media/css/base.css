@@ -1,6 +1,6 @@
 body {
     font-family: "Century Gothic";
-    font-size: 150%;
+    font-size: 120%;
     font-weight: bold;
 }
 
@@ -36,9 +36,6 @@ div.center {
     font-style:italic;
 }
 
-#menu {
-    width:500px;
-}
 #menu .item{
     border-bottom: thin solid #ddd;
     padding-bottom: 1ex;
