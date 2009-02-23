@@ -27,8 +27,10 @@ div.center {
     text-align: center;
 }
 
-#places li{
-    margin-bottom:1ex;
+#places li
+{
+	margin-bottom: 1ex;
+	list-style-type: none;
 }
 #places .addr{
     font-style:italic;
@@ -75,4 +77,11 @@ div.center {
 }
 #menu .buttons a img{
     border:none;
+}
+
+.rowodd {
+   color: black;
+}
+.roweven {
+   color: #FFFABF;
 }
