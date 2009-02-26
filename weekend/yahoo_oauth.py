@@ -37,4 +37,4 @@ class DBOAuthConsumerApp(OAuthConsumerApp):
             return json.loads(profile.yahoo_access_token)
         raise NoAccessToken()
 
-app = DBOAuthConsumerApp(settings.YAHOO_OAUTH)
+app = DBOAuthConsumerApp(**settings.YAHOO_OAUTH)
