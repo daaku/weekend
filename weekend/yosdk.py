@@ -9,7 +9,7 @@ YOS_URL='http://social.yahooapis.com/v1'
 YQL_URL='http://query.yahooapis.com/v1/yql'
 
 def social_graph(request):
-    access_token = request.session['yahoo_access_token']
+    access_token = yahoo_oauth.get_access_token(request)
     params = {
         'q': 'select * from social.profile (0, 9999) where guid in (select guid from social.connections (0, 9999) where owner_guid=me)',
         'format': 'json',
@@ -19,7 +19,7 @@ def social_graph(request):
     return body
 
 def updates(request, descr, title, link):
-    access_token = request.session['yahoo_access_token']
+    access_token = yahoo_oauth.get_access_token(request)
     guid = access_token['xoauth_yahoo_guid']
     source = "APP.JUqAuh5g"
     suid = random.randrange(0, 101)
@@ -44,7 +44,7 @@ def updates(request, descr, title, link):
     return response.status
 
 def geocode(request, location):
-    access_token = request.session['yahoo_access_token']
+    access_token = yahoo_oauth.get_access_token(request)
     params = {
         'q': 'select * from geo.places where text="' + location + '"',
         'format': 'json',

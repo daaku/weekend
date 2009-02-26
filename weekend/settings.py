@@ -20,6 +20,9 @@ MEDIA_ROOT = '%s/media' % os.path.dirname(os.path.realpath(__file__))
 MEDIA_URL = ''
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 APPEND_SLASH = True
+AUTHENTICATION_BACKENDS = (
+    'weekend.yahoo_oauth.DummyLogin',
+)
 TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.load_template_source',
 )

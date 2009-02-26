@@ -36,7 +36,7 @@ def location(request):
 
 @fireeagle_oauth.require_access_token
 def fireeagle_location(request):
-    access_token = request.session['fireeagle_access_token']
+    access_token = fireeagle_oauth.get_access_token(request)
     response = fireeagle_oauth.make_signed_req(
         FIREEAGLE_USER_URL,
         token=access_token,
@@ -86,7 +86,7 @@ def places(request):
     if 'lat' in request.GET and 'lon' in request.GET:
         lat = request.GET['lat']     # 37.4248085022
         lon = request.GET['lon']     # -122.074012756
-  
+
         params = {
             'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=15&sort=distance&start=0&lat=%s&long=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, settings.BOORAH_API_KEY),
             'format': 'json',
@@ -98,7 +98,7 @@ def places(request):
             restaurants = response['query']['results']['Result']
         else:
             restaurants = []
-        
+
         return HttpResponse(render('common/places.html', { 'places': restaurants }))
 
     else:
@@ -106,7 +106,6 @@ def places(request):
 
 @yahoo_oauth.require_access_token
 def menu(request):
-
     if 'lat' in request.GET and 'lon' in request.GET and 'restaurant' in request.GET:
 
         lat = request.GET['lat']                   # 37.4248085022
@@ -115,16 +114,15 @@ def menu(request):
         restaurantName= request.GET['restaurant']     # Country Deli
 
         friends = items_in_graph(request, restaurant)
-  
+
         params = {
             'q': "select * from xml where url='http://api.boorah.com/restaurants/WebServices/RestaurantSearch?radius=15&sort=distance&start=0&lat=%s&long=%s&name=%s&auth=%s' and itemPath = 'Response.ResultSet.Result'" % (lat, lon, quote(restaurant), settings.BOORAH_API_KEY),
             'format': 'json',
         }
         response = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))
-        
+
         menu = []
         try:
-
             # get restaurant json - then fetch menu url - then fetch yql menu
 
             # allmenus_yql = select * from html where url='http://www.allmenus.com/ca/mountain-view/123349-quiznos-sub/menu/' and xpath='//div[@class="menu_item"]'
@@ -132,7 +130,7 @@ def menu(request):
 
 	    restaurant = response['query']['results']['Result'][0]
             link = restaurant['LinkSet']['Link']
-                
+
             if link['type'] == 'menu':
                 params = {
                     'q': "select * from html where url='%s' and xpath = '//iframe'" % (link['url']),
@@ -141,10 +139,9 @@ def menu(request):
                 menu = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))['query']['results']['iframe']['src']
 
                 if 'allmenus' in menu:
-
                     response = yahoo_oauth.make_signed_req(menu)
                     response = yahoo_oauth.make_signed_req('http://allmenus.com' + response.getheader('location'))
-                
+
                     params = {
                         'q': "select * from html where url='%s' and xpath='//div[@class=\"menu_item\"]'" % ('http://allmenus.com' + response.getheader('location')),
                         'format': 'json',
@@ -153,20 +150,15 @@ def menu(request):
                     data = json.loads(unicode(yahoo_oauth.make_signed_req(YQL_PUBLIC_URL, content=params).read(), 'utf-8'))
                     menu = data['query']['results']['div']
 
-                
         except:
-
             pass
 
         return HttpResponse(render('common/menu.html', { 'menu': menu, 'friends': friends, 'restaurant': restaurantName  }))
 
     else:
-      
         return HttpResponseRedirect('/')
 
-
     return HttpResponse()
-
 
 @yahoo_oauth.require_access_token
 def add_review(request):
