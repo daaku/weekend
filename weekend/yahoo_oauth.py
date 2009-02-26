@@ -13,10 +13,11 @@ import logging
 
 class DummyLogin(ModelBackend):
     def authenticate(self, **kwargs):
-        if 'guid' in kwargs:
+        try:
+            guid = kwargs['guid']
             user, created = User.objects.get_or_create(username=guid, password=guid)
             return user
-        else:
+        except KeyError:
             return super(DummyLogin, self).authenticate(**kwargs)
 
 class DBOAuthConsumerApp(OAuthConsumerApp):
